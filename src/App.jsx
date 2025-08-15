@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Preloader from "./components/Preloader"; // ✅ This is MISSING
-
+import Preloader from "./components/Preloader"; 
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
@@ -10,7 +9,6 @@ import Contact from "./pages/Contact";
 import Industries from "./pages/Industries";
 import Certifications from "./pages/Certifications";
 import Clients from "./pages/Clients";
-import Preloader from "./components/Preloader"; // ✅ NEW
 import { AnimatePresence } from "framer-motion";
 
 function AnimatedRoutes() {
