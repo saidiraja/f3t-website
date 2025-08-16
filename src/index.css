@@ -12,6 +12,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Use Google Font */
+body {
+  font-family: 'Poppins', sans-serif;
+}
 
 a {
   font-weight: 500;

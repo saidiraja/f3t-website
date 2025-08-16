@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import useLanguage from "../components/useLanguage";
+import { Link } from "react-router-dom";
 
 export default function Industries() {
   const { language } = useLanguage();
@@ -76,25 +77,39 @@ export default function Industries() {
   const items = industries[language];
 
   return (
-    <section style={{ padding: "2rem", background: "#f9f9f9" }}>
-      <div style={{ maxWidth: "1000px", margin: "auto" }}>
+    <section style={{ padding: "3rem 1rem", background: "#f4f4f4" }}>
+      <div style={{ maxWidth: "1100px", margin: "auto" }}>
         <h1
           data-aos="fade-up"
           style={{
-            fontSize: "2.2rem",
+            fontSize: "2.4rem",
             color: "#051d40",
-            marginBottom: "2rem",
+            marginBottom: "0.5rem",
             textAlign: "center",
           }}
         >
           {language === "fr" ? "Industries desservies" : "Industries We Serve"}
         </h1>
+        <p
+          data-aos="fade-up"
+          style={{
+            textAlign: "center",
+            marginBottom: "2.5rem",
+            color: "#666",
+            fontSize: "1.05rem",
+          }}
+        >
+          {language === "fr"
+            ? "Nous accompagnons plusieurs secteurs industriels exigeants grâce à notre expertise en traitement thermique et de surface."
+            : "We support demanding industrial sectors through our advanced heat and surface treatment expertise."}
+        </p>
 
+        {/* INDUSTRY CARDS */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "1.5rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "2rem",
           }}
         >
           {items.map((industry, index) => (
@@ -102,23 +117,31 @@ export default function Industries() {
               key={index}
               data-aos="fade-up"
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "#fff",
                 borderRadius: "12px",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
                 overflow: "hidden",
-                transition: "transform 0.2s ease",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "scale(1.03)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-6px)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 20px rgba(0,0,0,0.1)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 14px rgba(0,0,0,0.06)";
+              }}
             >
               <img
                 src={industry.image}
                 alt={industry.title}
-                style={{ width: "100%", height: "160px", objectFit: "cover" }}
+                style={{
+                  width: "100%",
+                  height: "170px",
+                  objectFit: "cover",
+                }}
               />
               <div style={{ padding: "1.5rem", textAlign: "center" }}>
                 <i
@@ -132,12 +155,44 @@ export default function Industries() {
                 <h3 style={{ color: "#051d40", marginBottom: "0.5rem" }}>
                   {industry.title}
                 </h3>
-                <p style={{ color: "#444", fontSize: "0.95rem" }}>
+                <p style={{ color: "#444", fontSize: "1rem", lineHeight: "1.5" }}>
                   {industry.description}
                 </p>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* CTA BANNER */}
+        <div
+          data-aos="fade-up"
+          style={{
+            marginTop: "4rem",
+            backgroundColor: "#d51820",
+            padding: "2rem",
+            textAlign: "center",
+            borderRadius: "12px",
+            color: "#fff",
+          }}
+        >
+          <h2>
+            {language === "fr"
+              ? "Vous souhaitez en savoir plus ?"
+              : "Want to learn more?"}
+          </h2>
+          <Link
+            to="/services"
+            style={{
+              color: "#fff",
+              textDecoration: "underline",
+              fontWeight: "bold",
+              fontSize: "1.05rem",
+            }}
+          >
+            {language === "fr"
+              ? "Découvrez nos services adaptés à votre industrie"
+              : "Explore services tailored to your industry"}
+          </Link>
         </div>
       </div>
     </section>
