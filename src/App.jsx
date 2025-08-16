@@ -11,6 +11,9 @@ import Certifications from "./pages/Certifications";
 import Clients from "./pages/Clients";
 import Preloader from "./components/Preloader";
 import ScrollToTopButton from "./components/ScrollToTopButton";
+import Chatbot from "./components/Chatbot"; 
+import ScrollToTop from "./components/ScrollToTop";
+import DarkModeToggle from "./components/DarkModeToggle"; 
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -45,6 +48,9 @@ function App() {
       <AnimatedRoutes />
       <ScrollToTopButton />
       <Footer />
+      <Chatbot /> 
+       <ScrollToTop /> 
+        <DarkModeToggle /> 
     </BrowserRouter>
   );
 }

@@ -11,10 +11,22 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --bg-color: #ffffff;
+  --text-color: #051d40;
+  --card-bg: #f7f7f7;
+}
+[data-theme="dark"] {
+  --bg-color: #1f1f1f;
+  --text-color: #ffffff;
+  --card-bg: #2e2e2e;
 }
 /* Use Google Font */
 body {
   font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
