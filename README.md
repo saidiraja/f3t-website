@@ -1,12 +1,55 @@
-# React + Vite
+# 🌐 F3T – Fraternité Tunisienne de Traitement Thermique
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> 🚀 Professional bilingual website built with React, Vite, and AOS animations for F3T – Tunisia’s leading heat and surface treatment company.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Project Description
 
-## Expanding the ESLint configuration
+This website was created as part of a professional internship to modernize the online presence of **F3T**. It is:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🌍 Fully bilingual (French 🇫🇷 & English 🇬🇧)
+- 💼 Industry-focused and informative
+- 📱 Fully responsive and mobile-friendly
+- ✨ Smooth, animated, and interactive
+
+---
+
+## 🎨 Features
+
+- 🔁 Language toggle (FR/EN)
+- 💬 Interactive FAQ chatbot
+- 🌘 Dark mode toggle
+- ⚙️ Animated stats and smooth page transitions
+- 📌 Contact form with map and WhatsApp
+- 📚 Pages:
+  - Home
+  - About
+  - Services
+  - Industries
+  - Certifications
+  - Clients
+  - Contact
+
+---
+
+## 🛠️ Technologies Used
+
+| Tool / Tech               | Description                          |
+|--------------------------|--------------------------------------|
+| React.js                 | Front-end library                    |
+| Vite                    | Lightning-fast dev server & bundler |
+| AOS                     | Animate on scroll                    |
+| Framer Motion           | Page transitions                     |
+| Font Awesome            | Icons                                |
+| Google Fonts            | Professional web typography          |
+
+---
+
+## 📦 Installation & Usage (Developer)
+
+1. **Clone the repo:**
+
+```bash
+git clone https://github.com/saidiraja/f3t-website.git
+cd f3t-website
