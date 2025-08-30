@@ -1,0 +1,48 @@
+{
+"nav": {"home": "Home", "about": "About", "services": "Services", "industries": "Industries", "certifications": "Certifications", "clients": "Clients", "contact": "Contact"},
+"home": {
+"title": "F3T – Excellence in Heat and Surface Treatment",
+"intro": "Founded in 1990, Fraternité Tunisienne de Traitement Thermique (F3T) is Tunisia’s market leader and the national reference in heat and surface treatment services. We serve demanding sectors such as automotive, aerospace, heavy machinery, and toolmaking.\nWith over three decades of expertise, state‑of‑the‑art equipment, and a highly skilled team, we deliver optimal results that enhance the durability, performance, and reliability of your components.\nToday, F3T is strengthening its national leadership while expanding into international markets."
+},
+"about": {
+"mission": "To deliver reliable, precise, and innovative heat and surface treatment solutions that meet the highest standards while building long‑term partnerships with our clients.",
+"vision": "To remain the reference in heat treatment services in Tunisia, lead the national market, and expand our presence internationally.",
+"values": ["Quality","Innovation","Reliability","Client Commitment"],
+"leadership": [
+{"name":"Chokri Mbarek","role":"CEO","email":"chokrimbarek@yahoo.fr"},
+{"name":"Mohamed Amine Talmoudi","role":"Technical Director","email":"f3t_direction@topnet.tn"},
+{"name":"Souhail Labidi","role":"Commercial Representative","email":"labidisouheil@hotmail.fr"},
+{"name":"Souha Mbarek","role":"HR & Finance","email":"souha_mbarek@yahoo.fr"}
+]
+},
+"services": {
+"vacuum": [
+"Hardening of tool steels, high‑speed steels, and medium‑alloy structural steels.",
+"Solution treatment of superalloys.",
+"Structural hardening alloys treatment.",
+"Annealing, tempering, brazing."
+],
+"atmosphere": ["Oil quenching","Carburizing","Carbonitriding","Annealing","Tempering"],
+"nitriding": ["Gas nitriding","Tempering"],
+"induction": ["Localized hardening for series production."],
+"cleaning": ["Oil and solvent degreasing."],
+"zinc": ["Zinc plating with white, yellow, and black finish, with passivation and Finigard finish."],
+"bluing": ["For steels with very low % Cr."],
+"lab": ["Vickers, Brinell, and Rockwell hardness testers, microdurometer.","Polishers, abrasive belt grinder, universal cutting machine."]
+},
+"industries": {
+"items": [
+{"name":"Automotive","desc":"Enhanced wear resistance and durability of components."},
+{"name":"Aerospace","desc":"Meeting the highest performance and safety standards."},
+{"name":"Heavy Machinery","desc":"Treating large components for maximum strength."},
+{"name":"Toolmaking","desc":"Hardening and precision to extend tool lifespan."}
+]
+},
+"certifications": {"items": ["ISO 9001","Additional certifications in progress."]},
+"clients": {"logos": ["sim.png","sopem.png","defontaine.png","decotools.png","misfat.png"]},
+"contact": {
+"address": "Lot: N°23+54 Industrial Zone 1152 Hammem Zriba Zaghouan Tunisia",
+"phone": "+216 72 677 013",
+"email": "f3t_direction@topnet.tn"
+}
+}

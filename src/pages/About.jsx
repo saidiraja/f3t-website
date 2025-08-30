@@ -1,12 +1,14 @@
+// src/pages/About.jsx
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useLanguage from "../components/useLanguage";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useI18n } from "../i18n/useI18n";
+import SEO from "../components/SEO";
 
 export default function About() {
-  const { language } = useLanguage();
+  const { lang } = useI18n();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -34,11 +36,18 @@ export default function About() {
   ];
 
   const team = [
-    { name: "Chokri Mbarek", role: "CEO" },
-    { name: "Mohamed Amine Talmoudi", role: "Technical Director" },
-    { name: "Souhail Labidi", role: "Sales Representative" },
-    { name: "Souha Mbarek", role: "Finance & HR" },
+    { name: "Chokri Mbarek", role: lang === "fr" ? "CEO" : "CEO" },
+    { name: "Mohamed Amine Talmoudi", role: lang === "fr" ? "Directeur Technique" : "Technical Director" },
+    { name: "Souhail Labidi", role: lang === "fr" ? "Représentant Commercial" : "Sales Representative" },
+    { name: "Souha Mbarek", role: lang === "fr" ? "GRH & Finances" : "Finance & HR" },
   ];
+
+  const title =
+    lang === "fr" ? "À propos de F3T – Traitement thermique & surface" : "About F3T – Heat & Surface Treatment";
+  const description =
+    lang === "fr"
+      ? "F3T, fondée en 1990, est la référence en Tunisie pour le traitement thermique et de surface. Notre mission : qualité, innovation, fiabilité, engagement client."
+      : "Founded in 1990, F3T is Tunisia’s reference for heat & surface treatment. Our mission: quality, innovation, reliability, client commitment.";
 
   return (
     <motion.section
@@ -48,17 +57,24 @@ export default function About() {
       transition={{ duration: 0.5 }}
       style={styles.section}
     >
+      <SEO title={title} description={description} />
+
       <div style={styles.container}>
         {/* Hero Image */}
         <div data-aos="fade-up" style={styles.heroImage}>
-          <img src="/team.jpg" alt="Team" style={{ width: "100%", borderRadius: "12px", maxHeight: "320px", objectFit: "cover" }} />
+          <img
+            src="/team.jpg"
+            alt={lang === "fr" ? "Équipe F3T" : "F3T team"}
+            style={{ width: "100%", borderRadius: "12px", maxHeight: "320px", objectFit: "cover" }}
+            loading="lazy"
+          />
         </div>
 
         {/* Intro */}
         <div data-aos="fade-up" style={styles.card}>
-          <h1 style={styles.title}>{language === "fr" ? "À propos de F3T" : "About F3T"}</h1>
+          <h1 style={styles.title}>{lang === "fr" ? "À propos de F3T" : "About F3T"}</h1>
           <p style={styles.text}>
-            {language === "fr"
+            {lang === "fr"
               ? "Créée en 1990 par le groupe européen Bodycote, F3T est devenue une référence du traitement thermique en Tunisie."
               : "Founded in 1990 by the European Bodycote group, F3T became a reference in heat treatment in Tunisia."}
           </p>
@@ -68,17 +84,19 @@ export default function About() {
         <div data-aos="fade-up" style={styles.gridRow}>
           {highlights.map((h, i) => (
             <div key={i} style={styles.highlightBox}>
-              <i className={h.icon} style={styles.icon}></i>
-              <p>{language === "fr" ? h.fr : h.en}</p>
+              <i className={h.icon} style={styles.icon} aria-hidden="true"></i>
+              <p>{lang === "fr" ? h.fr : h.en}</p>
             </div>
           ))}
         </div>
 
         {/* Mission */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-bullseye"></i> {language === "fr" ? "Notre mission" : "Our Mission"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-bullseye" aria-hidden="true"></i> {lang === "fr" ? "Notre mission" : "Our Mission"}
+          </h2>
           <p style={styles.text}>
-            {language === "fr"
+            {lang === "fr"
               ? "Offrir des solutions fiables, précises et innovantes conformes aux normes les plus strictes."
               : "To deliver reliable, precise, and innovative solutions that meet the highest standards."}
           </p>
@@ -86,9 +104,11 @@ export default function About() {
 
         {/* Vision */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-eye"></i> {language === "fr" ? "Notre vision" : "Our Vision"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-eye" aria-hidden="true"></i> {lang === "fr" ? "Notre vision" : "Our Vision"}
+          </h2>
           <p style={styles.text}>
-            {language === "fr"
+            {lang === "fr"
               ? "Être et rester la référence du traitement thermique en Tunisie, et développer notre présence à l’international."
               : "To remain the national leader in heat treatment and expand internationally."}
           </p>
@@ -96,19 +116,27 @@ export default function About() {
 
         {/* Values */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-gem"></i> {language === "fr" ? "Nos valeurs" : "Our Values"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-gem" aria-hidden="true"></i> {lang === "fr" ? "Nos valeurs" : "Our Values"}
+          </h2>
           <ul style={styles.list}>
             {values.map((val, i) => (
-              <li key={i}><i className={val.icon} style={styles.icon}></i>{language === "fr" ? val.fr : val.en}</li>
+              <li key={i}>
+                <i className={val.icon} style={styles.icon} aria-hidden="true"></i>
+                {lang === "fr" ? val.fr : val.en}
+              </li>
             ))}
           </ul>
         </div>
 
         {/* Quality Standards */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-check-double"></i> {language === "fr" ? "Normes de qualité" : "Quality Standards"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-check-double" aria-hidden="true"></i>{" "}
+            {lang === "fr" ? "Normes de qualité" : "Quality Standards"}
+          </h2>
           <p style={styles.text}>
-            {language === "fr"
+            {lang === "fr"
               ? "Nous suivons un système qualité rigoureux conforme à la norme ISO 9001 et aux exigences spécifiques de chaque client."
               : "We follow a rigorous quality management system certified under ISO 9001 and tailored to client-specific requirements."}
           </p>
@@ -116,33 +144,53 @@ export default function About() {
 
         {/* Timeline */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-history"></i> {language === "fr" ? "Historique" : "Company Timeline"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-history" aria-hidden="true"></i> {lang === "fr" ? "Historique" : "Company Timeline"}
+          </h2>
           <ul style={styles.timeline}>
             {timeline.map((item, i) => (
-              <li key={i}><strong>{item.year}</strong> – {language === "fr" ? item.fr : item.en}</li>
+              <li key={i}>
+                <strong>{item.year}</strong> – {lang === "fr" ? item.fr : item.en}
+              </li>
             ))}
           </ul>
         </div>
 
         {/* Team */}
         <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-users"></i> {language === "fr" ? "Équipe dirigeante" : "Leadership Team"}</h2>
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-users" aria-hidden="true"></i> {lang === "fr" ? "Équipe dirigeante" : "Leadership Team"}
+          </h2>
           <ul style={styles.list}>
             {team.map((t, i) => (
-              <li key={i}><i className="fas fa-user" style={styles.icon}></i>{t.name} – {t.role}</li>
+              <li key={i}>
+                <i className="fas fa-user" style={styles.icon} aria-hidden="true"></i>
+                {t.name} – {t.role}
+              </li>
             ))}
           </ul>
         </div>
 
         {/* CEO Quote */}
         <div data-aos="fade-up" style={{ ...styles.card, textAlign: "center" }}>
-          <img src="/ceo.jpg" alt="CEO" style={{
-            width: "120px", height: "120px", borderRadius: "100%",
-            objectFit: "cover", marginBottom: "1rem", border: "3px solid #d51820"
-          }} />
-          <h2 style={styles.subtitle}><i className="fas fa-quote-left"></i> {language === "fr" ? "Message du CEO" : "CEO Message"}</h2>
+          <img
+            src="/ceo.jpg"
+            alt={lang === "fr" ? "Directeur général de F3T" : "F3T CEO"}
+            style={{
+              width: "120px",
+              height: "120px",
+              borderRadius: "100%",
+              objectFit: "cover",
+              marginBottom: "1rem",
+              border: "3px solid #d51820",
+            }}
+            loading="lazy"
+          />
+          <h2 style={styles.subtitle}>
+            <i className="fas fa-quote-left" aria-hidden="true"></i> {lang === "fr" ? "Message du CEO" : "CEO Message"}
+          </h2>
           <p style={{ ...styles.text, fontStyle: "italic" }}>
-            {language === "fr"
+            {lang === "fr"
               ? "Chez F3T, nous croyons que la qualité est une culture et non une option."
               : "At F3T, we believe quality is a culture — not a choice."}
           </p>
@@ -151,9 +199,9 @@ export default function About() {
 
         {/* CTA */}
         <div data-aos="fade-up" style={styles.ctaBlock}>
-          <h3>{language === "fr" ? "Envie de collaborer avec nous ?" : "Want to work with us?"}</h3>
+          <h3>{lang === "fr" ? "Envie de collaborer avec nous ?" : "Want to work with us?"}</h3>
           <Link to="/contact" style={styles.ctaLink}>
-            {language === "fr" ? "Prenez contact dès aujourd’hui" : "Get in touch today"}
+            {lang === "fr" ? "Prenez contact dès aujourd’hui" : "Get in touch today"}
           </Link>
         </div>
       </div>
@@ -163,7 +211,7 @@ export default function About() {
 
 const styles = {
   section: {
-    background: "#f7f7f7",
+    background:  "transparent",
     color: "#333",
     padding: "4rem 1rem",
   },
@@ -175,12 +223,13 @@ const styles = {
     marginBottom: "2rem",
   },
   card: {
-    backgroundColor: "#fff",
+     backgroundColor: "rgba(255,255,255,0.85)",
+  backdropFilter: "saturate(120%) blur(2px)",
     padding: "2rem",
     borderRadius: "12px",
     boxShadow: "0 2px 14px rgba(0,0,0,0.06)",
     marginBottom: "2rem",
-     textAlign: "center",
+    textAlign: "center",
   },
   title: {
     fontSize: "2.2rem",
@@ -223,7 +272,8 @@ const styles = {
     marginBottom: "2rem",
   },
   highlightBox: {
-    backgroundColor: "#fff",
+     backgroundColor: "rgba(255,255,255,0.85)",
+   backdropFilter: "saturate(120%) blur(2px)",
     border: "1px solid #eee",
     padding: "1.5rem",
     borderRadius: "10px",

@@ -1,29 +1,50 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
-    <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
-
     <meta charset="UTF-8" />
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Removed favicon that doesn't exist -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>F3T – Traitement Thermique</title>
-    <!-- Google Font: Poppins -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
+    <!-- Performance: preconnect for Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Font: Poppins (single include) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Basic SEO -->
+    <title>F3T – Excellence dans le traitement thermique et de surface</title>
+    <meta
+      name="description"
+      content="F3T est la référence nationale en traitement thermique et de surface en Tunisie. Services : trempe sous vide, cémentation, nitruration gazeuse, induction, zingage, brunissage. Bilingue FR/EN."
+    />
+
+    <!-- Open Graph (social sharing) -->
+    <meta property="og:title" content="F3T – Excellence dans le traitement thermique et de surface" />
+    <meta
+      property="og:description"
+      content="Leader tunisien du traitement thermique et de surface. Automobile, aéronautique, machines lourdes, outillage."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/Nlogo.png" />
+    <meta property="og:url" content="https://<your-deploy-domain>" />
+
+    <!-- Theme color for mobile address bar -->
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/Nlogo.png" />
+    <link rel="apple-touch-icon" href="/Nlogo.png" />
+
+    <!-- NOTE:
+      - We intentionally do NOT include Font Awesome here.
+      - You already import '@fortawesome/fontawesome-free/css/all.min.css' in main.jsx.
+      - Keeping it here would duplicate styles and slow FCP.
+    -->
   </head>
   <body>
+    <noscript>Ce site nécessite JavaScript pour fonctionner correctement.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

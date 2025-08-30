@@ -1,55 +1,158 @@
-# 🌐 F3T – Fraternité Tunisienne de Traitement Thermique
+# F3T – Excellence in Heat & Surface Treatment
 
-> 🚀 Professional bilingual website built with React, Vite, and AOS animations for F3T – Tunisia’s leading heat and surface treatment company.
+Bilingual (FR/EN) corporate website for **Fraternité Tunisienne de Traitement Thermique (F3T)**, built with Vite + React.  
+This project was developed and polished to meet **INT102** internship requirements: clean code, i18n, accessibility, SEO, and deployability.
 
----
-
-## 📌 Project Description
-
-This website was created as part of a professional internship to modernize the online presence of **F3T**. It is:
-
-- 🌍 Fully bilingual (French 🇫🇷 & English 🇬🇧)
-- 💼 Industry-focused and informative
-- 📱 Fully responsive and mobile-friendly
-- ✨ Smooth, animated, and interactive
+## Live Demo
+<!-- Add your link after deployment -->
+**Demo:** https://<your-domain-or-gh-pages-link>
 
 ---
 
-## 🎨 Features
+## ✨ Features
 
-- 🔁 Language toggle (FR/EN)
-- 💬 Interactive FAQ chatbot
-- 🌘 Dark mode toggle
-- ⚙️ Animated stats and smooth page transitions
-- 📌 Contact form with map and WhatsApp
-- 📚 Pages:
-  - Home
-  - About
-  - Services
-  - Industries
-  - Certifications
-  - Clients
-  - Contact
+- **Bilingual** (French default, English): global language switch
+- **Pages:** Home, About, Services, Industries, Certifications, Clients, Contact (+ 404)
+- **Global background** with frosted glass cards
+- **SEO** per page via `<SEO />` component (title, meta)
+- **JSON-LD** Organization schema on Contact
+- **Accessibility basics:** focus styles, alt text, keyboard-navigable dialog for FAQ chatbot
+- **Animations:** AOS + Framer Motion (lightweight, graceful)
+- **UI helpers:** Floating WhatsApp (bottom-left), Chatbot/FAQ (bottom-right), Scroll-to-top
+- **Responsive** layout with modern CSS
 
 ---
 
-## 🛠️ Technologies Used
+## 🧩 Tech Stack
 
-| Tool / Tech               | Description                          |
-|--------------------------|--------------------------------------|
-| React.js                 | Front-end library                    |
-| Vite                    | Lightning-fast dev server & bundler |
-| AOS                     | Animate on scroll                    |
-| Framer Motion           | Page transitions                     |
-| Font Awesome            | Icons                                |
-| Google Fonts            | Professional web typography          |
+- **Frontend:** React 18, Vite
+- **Routing:** react-router-dom
+- **Animations:** framer-motion, AOS
+- **Icons:** Font Awesome
+- **State/i18n:** simple React context hook (`useI18n`)
+- **Tooling:** ESLint (via Vite), npm scripts
 
 ---
 
-## 📦 Installation & Usage (Developer)
+## 📁 Project Structure
 
-1. **Clone the repo:**
+f3t-website/ 
+├─ public/ 
+│ ├─ bg-metal.jpg
+│ ├─ logos/
+│ │ ├─ sim.png
+│ │ ├─ sopem.png
+│ │ ├─ defontaine.png
+│ │ ├─ decotools.png
+│ │ └─ misfat.png
+│ ├─ industry-automotive.jpg
+│ ├─ industry-aerospace.jpg
+│ ├─ industry-heavy.jpg
+│ └─ industry-tools.jpg
+├─ src/
+│ ├─ components/
+│ │ ├─ Navbar.jsx
+│ │ ├─ Footer.jsx
+│ │ ├─ SEO.jsx
+│ │ ├─ SiteBackground.jsx
+│ │ ├─ LangSwitch.jsx
+│ │ ├─ Chatbot.jsx
+│ │ ├─ Chatbot.css
+│ │ ├─ ScrollToTop.jsx
+│ │ ├─ ScrollToTopButton.jsx
+│ │ ├─ WhatsAppButton.jsx
+│ │ └─ ErrorBoundary.jsx
+│ ├─ i18n/
+│ │ └─ useI18n.jsx
+│ ├─ pages/
+│ │ ├─ Home.jsx
+│ │ ├─ About.jsx
+│ │ ├─ Services.jsx
+│ │ ├─ Industries.jsx
+│ │ ├─ Certifications.jsx
+│ │ ├─ Clients.jsx
+│ │ ├─ Contact.jsx
+│ │ └─ NotFound.jsx
+│ ├─ App.jsx
+│ ├─ main.jsx
+│ └─ index.css
+├─ .gitignore
+├─ index.html
+├─ package.json
+└─ vite.config.js
+
+
+> **Removed** legacy files: `LanguageContext.jsx`, `useLanguage.jsx`, `LanguageToggle.jsx`.
+
+---
+
+## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/saidiraja/f3t-website.git
-cd f3t-website
+# install deps
+npm install
+
+# dev server
+npm run dev
+
+# build for production
+npm run build
+
+# preview build locally
+npm run preview
+
+🔤 Internationalization
+
+src/i18n/useI18n.jsx provides a tiny context with lang and setLang.
+
+LangSwitch.jsx toggles FR/EN in the Navbar.
+
+Pages read const { lang } = useI18n() and branch strings per language.
+
+🔎 SEO & Schema
+
+Each page includes <SEO title="..." description="..." /> with correct language strings.
+
+Contact page injects Organization JSON-LD (schema.org) with address, phone, email.
+
+404 page sets noindex, nofollow while mounted.
+
+♿ Accessibility Notes
+
+Focusable elements have visible focus rings.
+
+Chatbot dialog is keyboard-trappable and closes with Esc.
+
+All images include meaningful alt text (logos/industries).
+
+🖼️ Assets (must exist in /public)
+
+Global:
+
+/bg-metal.jpg (background)
+
+/Nlogo.png (logo in Navbar/Footer)
+
+Industries:
+
+/industry-automotive.jpg
+
+/industry-aerospace.jpg
+
+/industry-heavy.jpg
+
+/industry-tools.jpg
+
+Clients:
+
+/logos/sim.png
+
+/logos/sopem.png
+
+/logos/defontaine.png
+
+/logos/decotools.png
+
+/logos/misfat.png
+
+(Placeholders are fine during development.)

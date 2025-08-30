@@ -1,15 +1,23 @@
+// src/pages/Services.jsx
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useLanguage from "../components/useLanguage";
+import { useI18n } from "../i18n/useI18n";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 export default function Services() {
-  const { language } = useLanguage();
+  const { lang } = useI18n();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+  const title = lang === "fr" ? "F3T | Nos services" : "F3T | Our services";
+  const description =
+    lang === "fr"
+      ? "Découvrez nos unités de traitement thermique et de surface : trempe sous vide, atmosphère, nitruration gazeuse, induction, nettoyage, zingage, brunissage."
+      : "Explore our heat & surface treatment units: vacuum, atmosphere, gas nitriding, induction, cleaning, zinc plating, hot bluing.";
 
   const services = {
     fr: [
@@ -59,7 +67,7 @@ export default function Services() {
         icon: "fas fa-fire",
         title: "Vacuum Heat Treatment Unit",
         description:
-          "Hardening of tool steels, high-speed steels, and medium‑alloy structural steels. Solution treatment of superalloys. Annealing, tempering, brazing.",
+          "Hardening of tool steels, high-speed steels, and medium-alloy structural steels. Solution treatment of superalloys. Annealing, tempering, brazing.",
         tags: ["High precision", "Aerospace certified"],
       },
       {
@@ -98,24 +106,26 @@ export default function Services() {
     ],
   };
 
-  const currentServices = services[language];
+  const currentServices = services[lang];
 
   return (
-    <section style={{ padding: "3rem 1rem", backgroundColor: "#f4f4f4" }}>
-      <div style={{ maxWidth: "1100px", margin: "auto" }}>
+    <section style={{ padding: "3rem 1rem", backgroundColor:  "transparent" }}>
+      <SEO title={title} description={description} />
 
+      <div style={{ maxWidth: "1100px", margin: "auto" }}>
         {/* Header image */}
         <div data-aos="fade-up" style={{ marginBottom: "2rem" }}>
           <img
             src="/factory.jpg"
-            alt="Service factory"
+            alt={lang === "fr" ? "Atelier de traitement thermique" : "Heat treatment factory"}
             style={{
               width: "100%",
               borderRadius: "12px",
               maxHeight: "300px",
               objectFit: "cover",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)"
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
             }}
+            loading="lazy"
           />
         </div>
 
@@ -129,14 +139,15 @@ export default function Services() {
             textAlign: "center",
           }}
         >
-          {language === "fr" ? "Nos Services" : "Our Services"}
+          {lang === "fr" ? "Nos Services" : "Our Services"}
         </h1>
 
         {/* Intro */}
         <div
           data-aos="fade-up"
           style={{
-            backgroundColor: "#ffffff",
+              backgroundColor: "rgba(255,255,255,0.85)",
+                backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
@@ -145,9 +156,7 @@ export default function Services() {
           }}
         >
           <h2 style={{ color: "#d51820", marginBottom: "1rem" }}>
-            {language === "fr"
-              ? "Technologie & Excellence"
-              : "Technology & Excellence"}
+            {lang === "fr" ? "Technologie & Excellence" : "Technology & Excellence"}
           </h2>
           <p
             style={{
@@ -158,7 +167,7 @@ export default function Services() {
               lineHeight: "1.7",
             }}
           >
-            {language === "fr"
+            {lang === "fr"
               ? "Nos unités de traitement thermique et de surface sont conçues pour répondre aux exigences les plus strictes des industries modernes."
               : "Our heat and surface treatment units are designed to meet the most demanding industrial standards."}
           </p>
@@ -177,38 +186,30 @@ export default function Services() {
               key={index}
               data-aos="fade-up"
               style={{
-                backgroundColor: "#fff",
+                  backgroundColor: "rgba(255,255,255,0.85)",
+                backdropFilter: "saturate(120%) blur(2px)",
                 padding: "2rem",
                 borderRadius: "16px",
                 boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
                 transition: "transform 0.2s ease",
                 textAlign: "center",
               }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.transform = "translateY(-6px)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.transform = "translateY(0)")
-              }
+              onMouseOver={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "translateY(0)")}
             >
               <i
-                className={`${service.icon}`}
+                className={service.icon}
                 style={{
                   fontSize: "2.4rem",
                   color: "#d51820",
                   marginBottom: "0.8rem",
                 }}
+                aria-hidden="true"
               ></i>
               <h3 style={{ color: "#051d40", marginBottom: "0.6rem", fontSize: "1.3rem" }}>
                 {service.title}
               </h3>
-              <p
-                style={{
-                  color: "#444",
-                  fontSize: "1rem",
-                  lineHeight: "1.6",
-                }}
-              >
+              <p style={{ color: "#444", fontSize: "1rem", lineHeight: "1.6" }}>
                 {service.description}
               </p>
 
@@ -229,7 +230,7 @@ export default function Services() {
                         marginTop: "0.3rem",
                       }}
                     >
-                      <i className="fas fa-check" style={{ marginRight: "5px" }}></i>
+                      <i className="fas fa-check" style={{ marginRight: "5px" }} aria-hidden="true"></i>
                       {tag}
                     </span>
                   ))}
@@ -251,9 +252,14 @@ export default function Services() {
             color: "#fff",
           }}
         >
-          <h2>{language === "fr" ? "Besoin d'un service sur mesure ?" : "Need a custom service?"}</h2>
-          <Link to="/contact" style={{ color: "#fff", textDecoration: "underline", fontWeight: "bold" }}>
-            {language === "fr" ? "Contactez notre équipe dès aujourd'hui" : "Reach out to our team today"}
+          <h2>{lang === "fr" ? "Besoin d'un service sur mesure ?" : "Need a custom service?"}</h2>
+          <Link
+            to="/contact"
+            style={{ color: "#fff", textDecoration: "underline", fontWeight: "bold" }}
+          >
+            {lang === "fr"
+              ? "Contactez notre équipe dès aujourd'hui"
+              : "Reach out to our team today"}
           </Link>
         </div>
       </div>

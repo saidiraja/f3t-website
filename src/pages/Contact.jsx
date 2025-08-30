@@ -1,19 +1,64 @@
-import { useEffect } from "react";
+// src/pages/Contact.jsx
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useLanguage from "../components/useLanguage";
+import { useI18n } from "../i18n/useI18n";
+import SEO from "../components/SEO";
 
 export default function Contact() {
-  const { language } = useLanguage();
+  const { lang } = useI18n();
+  const [form, setForm] = useState({ name: "", email: "", msg: "" });
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
 
-  return (
-    <section style={{ padding: "2rem", background: "#f9f9f9" }}>
-      <div style={{ maxWidth: "900px", margin: "auto" }}>
+  const title = lang === "fr" ? "F3T | Contact" : "F3T | Contact";
+  const description =
+    lang === "fr"
+      ? "Contactez F3T : Lot N°23+54 Zone Industrielle 1152 Hammem Zriba Zaghouan, +216 72 677 013, f3t_direction@topnet.tn."
+      : "Contact F3T: Lot N°23+54 Industrial Zone 1152 Hammem Zriba Zaghouan, +216 72 677 013, f3t_direction@topnet.tn.";
 
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Fraternité Tunisienne de Traitement Thermique (F3T)",
+    url: "https://<your-domain>",
+    logo: "https://<your-domain>/Nlogo.png",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Lot: N°23+54 Zone Industrielle 1152 Hammem Zriba",
+      addressLocality: "Zaghouan",
+      addressCountry: "TN",
+    },
+    telephone: "+21672677013",
+    email: "f3t_direction@topnet.tn",
+  };
+
+  function onChange(e) {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  }
+
+  function onSubmit(e) {
+    e.preventDefault();
+    // No backend: just a friendly confirmation
+    alert(lang === "fr" ? "✅ Message envoyé (démo – pas de backend)." : "✅ Message sent (demo – no backend).");
+    setForm({ name: "", email: "", msg: "" });
+  }
+
+  return (
+    <section style={{ padding: "2rem", background:  "transparent" }}>
+      <SEO title={title} description={description} canonical="https://<your-domain>/contact" />
+
+      {/* Organization JSON-LD (update your domain after deployment) */}
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+
+      <div style={{ maxWidth: "900px", margin: "auto" }}>
         {/* Title */}
         <h1
           data-aos="fade-up"
@@ -24,64 +69,111 @@ export default function Contact() {
             textAlign: "center",
           }}
         >
-          {language === "fr" ? "Contactez-nous" : "Contact Us"}
+          {lang === "fr" ? "Contactez-nous" : "Contact Us"}
         </h1>
 
         {/* Contact Info */}
         <div
           data-aos="fade-up"
           style={{
-            background: "#ffffff",
+              backgroundColor: "rgba(255,255,255,0.85)",
+                backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
             marginBottom: "2rem",
           }}
         >
-          <p><strong>Email:</strong> f3t_direction@topnet.tn</p>
-          <p><strong>Téléphone / Phone:</strong> +216 72 677 013</p>
-          <p><strong>
-            {language === "fr" ? "Adresse" : "Address"}:
-          </strong> Lot: N°23+54 Zone Industrielle 1152 Hammem Zriba Zaghouan Tunisie</p>
+          <p>
+            <strong>Email:</strong> <a href="mailto:f3t_direction@topnet.tn">f3t_direction@topnet.tn</a>
+          </p>
+          <p>
+            <strong>Téléphone / Phone:</strong>{" "}
+            <a href="tel:+21672677013">+216 72 677 013</a>
+          </p>
+          <p>
+            <strong>{lang === "fr" ? "Adresse" : "Address"}:</strong> Lot: N°23+54 Zone Industrielle 1152 Hammem Zriba
+            Zaghouan Tunisie
+          </p>
         </div>
 
         {/* Google Map */}
         <div data-aos="fade-up" style={{ marginBottom: "2rem" }}>
           <iframe
-            title="Google Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3315.5783791488697!2d10.130188!3d36.376628!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd5cd90b50fef3%3A0x96e65b0aa0decb52!2sZriba%20Zaghouan!5e0!3m2!1sfr!2stn!4v1694457100000!5m2!1sfr!2stn"
-            width="100%"
-            height="300"
-            style={{ border: 0, borderRadius: "12px" }}
-            allowFullScreen=""
+            title={lang === "fr" ? "Carte – F3T" : "Map – F3T"}
             loading="lazy"
-          ></iframe>
+            referrerPolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Lot:%20N%C2%B023%2B54%20Zone%20Industrielle%201152%20Hammem%20Zriba%20Zaghouan%20Tunisie&output=embed"
+            width="100%"
+            height="320"
+            style={{ border: 0, borderRadius: "12px" }}
+            allowFullScreen
+          />
         </div>
 
         {/* Contact Form */}
-        <div data-aos="fade-up" style={{ backgroundColor: "#fff", padding: "2rem", borderRadius: "12px", boxShadow: "0 2px 10px rgba(0,0,0,0.06)" }}>
-          <form>
+        <div
+          data-aos="fade-up"
+          style={{
+             backgroundColor: "rgba(255,255,255,0.85)",
+                backdropFilter: "saturate(120%) blur(2px)",
+            padding: "2rem",
+            borderRadius: "12px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+          }}
+        >
+          <form onSubmit={onSubmit} noValidate>
             <div style={{ marginBottom: "1rem" }}>
+              <label htmlFor="name" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                {lang === "fr" ? "Nom" : "Name"}
+              </label>
               <input
+                id="name"
+                name="name"
                 type="text"
-                placeholder={language === "fr" ? "Nom" : "Name"}
+                value={form.name}
+                onChange={onChange}
+                placeholder={lang === "fr" ? "Votre nom" : "Your name"}
+                required
+                aria-required="true"
                 style={inputStyle}
               />
             </div>
+
             <div style={{ marginBottom: "1rem" }}>
+              <label htmlFor="email" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                Email
+              </label>
               <input
+                id="email"
+                name="email"
                 type="email"
-                placeholder="Email"
+                value={form.email}
+                onChange={onChange}
+                placeholder="email@example.com"
+                required
+                aria-required="true"
                 style={inputStyle}
               />
             </div>
+
             <div style={{ marginBottom: "1rem" }}>
+              <label htmlFor="msg" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                {lang === "fr" ? "Message" : "Message"}
+              </label>
               <textarea
-                placeholder={language === "fr" ? "Message" : "Message"}
-                rows="4"
-                style={{ ...inputStyle, resize: "none" }}
+                id="msg"
+                name="msg"
+                rows={4}
+                value={form.msg}
+                onChange={onChange}
+                placeholder={lang === "fr" ? "Votre message…" : "Your message…"}
+                required
+                aria-required="true"
+                style={{ ...inputStyle, resize: "vertical" }}
               />
             </div>
+
             <button
               type="submit"
               style={{
@@ -91,18 +183,16 @@ export default function Contact() {
                 border: "none",
                 borderRadius: "25px",
                 cursor: "pointer",
+                fontWeight: 600,
               }}
-              onClick={(e) => {
-                e.preventDefault();
-                alert("✅ Message envoyé (non connecté à un backend).");
-              }}
+              aria-label={lang === "fr" ? "Envoyer le message" : "Send the message"}
             >
-              {language === "fr" ? "Envoyer" : "Send"}
+              {lang === "fr" ? "Envoyer" : "Send"}
             </button>
           </form>
         </div>
 
-        {/* WhatsApp Button */}
+        {/* WhatsApp CTA */}
         <div data-aos="fade-up" style={{ textAlign: "center", marginTop: "2rem" }}>
           <a
             href="https://wa.me/21672677013"
@@ -117,28 +207,12 @@ export default function Contact() {
               fontWeight: "bold",
               textDecoration: "none",
             }}
+            aria-label="WhatsApp"
+            title="WhatsApp"
           >
-            <i className="fab fa-whatsapp" style={{ marginRight: "0.5rem" }}></i>
-            {language === "fr" ? "Contacter via WhatsApp" : "Contact via WhatsApp"}
+            <i className="fab fa-whatsapp" style={{ marginRight: "0.5rem" }} aria-hidden="true"></i>
+            {lang === "fr" ? "Contacter via WhatsApp" : "Contact via WhatsApp"}
           </a>
-        </div>
-
-        {/* Chatbot Placeholder */}
-        <div
-          data-aos="fade-up"
-          style={{
-            marginTop: "3rem",
-            textAlign: "center",
-            padding: "1rem",
-            backgroundColor: "#eeeeee",
-            borderRadius: "8px",
-            fontStyle: "italic",
-            color: "#666",
-          }}
-        >
-          🤖 {language === "fr"
-            ? "Zone de chatbot (FAQ) à venir bientôt."
-            : "Chatbot FAQ zone coming soon."}
         </div>
       </div>
     </section>

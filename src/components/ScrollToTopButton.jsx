@@ -1,44 +1,64 @@
+// src/components/ScrollToTopButton.jsx
 import { useEffect, useState } from "react";
 
 export default function ScrollToTopButton() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 300) setIsVisible(true);
-      else setIsVisible(false);
-    };
-
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    const onScroll = () => setShow(window.scrollY > 300);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  if (!show) return null;
 
   return (
-    isVisible && (
+    <>
+      <style>{`
+        .scrolltop-fab {
+          position: fixed;
+          right: 16px;
+          bottom: 96px; /* sits above Chatbot at bottom-right */
+          z-index: 1001; /* above Chatbot(1000) and WhatsApp(999) */
+          box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+        @media (max-width: 640px){
+          .scrolltop-fab {
+            right: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 16px; /* bottom-center on small screens */
+          }
+        }
+        /* Respect iOS safe areas */
+        @supports (padding: max(0px)) {
+          .scrolltop-fab {
+            bottom: max(96px, env(safe-area-inset-bottom)); /* desktop: still clears Chatbot */
+          }
+          @media (max-width: 640px){
+            .scrolltop-fab {
+              bottom: max(16px, env(safe-area-inset-bottom));
+              left: calc(50% + env(safe-area-inset-left)/2);
+            }
+          }
+        }
+      `}</style>
       <button
-        onClick={scrollToTop}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Scroll to top"
+        className="scrolltop-fab"
         style={{
-          position: "fixed",
-          bottom: "2rem",
-          right: "2rem",
-          background: "#d51820",
+          background:"#d51820",
           color: "#fff",
           border: "none",
-          borderRadius: "50%",
-          padding: "0.8rem 1rem",
-          fontSize: "1.2rem",
+          padding: "0.6rem 0.9rem",
+          borderRadius: "10px",
+          fontWeight: 600,
           cursor: "pointer",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-          zIndex: 999,
         }}
-        aria-label="Scroll to top"
       >
         ↑
       </button>
-    )
+    </>
   );
 }

@@ -1,0 +1,48 @@
+{
+"nav": {"home": "Accueil", "about": "À propos", "services": "Services", "industries": "Industries", "certifications": "Certifications", "clients": "Clients", "contact": "Contact"},
+"home": {
+"title": "F3T – Excellence dans le traitement thermique et de surface",
+"intro": "Fondée en 1990, la Fraternité Tunisienne de Traitement Thermique (F3T) est le leader et la référence nationale en matière de traitement thermique et de surface. Nous servons des secteurs exigeants tels que l’automobile, l’aéronautique, les machines lourdes et la fabrication d’outils.\nForts de plus de trois décennies d’expérience, d’équipements à la pointe de la technologie et d’une équipe hautement qualifiée, nous garantissons des résultats optimaux qui améliorent la durabilité, la performance et la fiabilité de vos pièces.\nAujourd’hui, F3T renforce son leadership national tout en développant sa présence sur les marchés internationaux."
+},
+"about": {
+"mission": "Offrir des solutions de traitement thermique et de surface fiables, précises et innovantes, conformes aux normes les plus strictes, tout en construisant des partenariats durables avec nos clients.",
+"vision": "Être et rester la référence du traitement thermique en Tunisie, leader du marché national, et développer notre présence à l’international.",
+"values": ["Qualité","Innovation","Fiabilité","Engagement client"],
+"leadership": [
+{"name":"Chokri Mbarek","role":"CEO","email":"chokrimbarek@yahoo.fr"},
+{"name":"Mohamed Amine Talmoudi","role":"Directeur Technique","email":"f3t_direction@topnet.tn"},
+{"name":"Souhail Labidi","role":"Représentant Commercial","email":"labidisouheil@hotmail.fr"},
+{"name":"Souha Mbarek","role":"GRH et Finances","email":"souha_mbarek@yahoo.fr"}
+]
+},
+"services": {
+"vacuum": [
+"Trempe des aciers à outils, aciers rapides, aciers de construction moyennement alliés.",
+"Mise en solution des superalliages.",
+"Traitement des alliages à durcissement structural.",
+"Recuits, revenus, brasage."
+],
+"atmosphere": ["Trempe à l’huile","Cémentation","Carbonitruration","Recuit","Revenu"],
+"nitriding": ["Nitruration gazeuse","Revenu"],
+"induction": ["Trempe localisée pour travail de série."],
+"cleaning": ["Dégraissage à l’huile et au solvant."],
+"zinc": ["Zingage finition blanc, jaune, noir avec passivation et finition finigard."],
+"bluing": ["Pour aciers à très faible % de Cr."],
+"lab": ["Vickers, Brinell, Rockwell, microduromètre.","Polisseuses, rectifieuse à bande abrasive, tronçonneuse universelle."]
+},
+"industries": {
+"items": [
+{"name":"Automobile","desc":"Amélioration de la résistance à l’usure et de la durabilité des composants."},
+{"name":"Aéronautique","desc":"Respect des exigences de performance et de sécurité les plus strictes."},
+{"name":"Machines lourdes","desc":"Traitement de grandes pièces pour une résistance maximale."},
+{"name":"Fabrication d’outils","desc":"Durcissement et précision pour prolonger la durée de vie des outils."}
+]
+},
+"certifications": {"items": ["ISO 9001","Autres certifications en cours d’acquisition."]},
+"clients": {"logos": ["sim.png","sopem.png","defontaine.png","decotools.png","misfat.png"]},
+"contact": {
+"address": "Lot: N°23+54 Zone Industrielle 1152 Hammem Zriba Zaghouan Tunisie",
+"phone": "+216 72 677 013",
+"email": "f3t_direction@topnet.tn"
+}
+}

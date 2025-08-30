@@ -1,8 +1,28 @@
+// src/components/Footer.jsx
 import { Link } from "react-router-dom";
-import useLanguage from "./useLanguage";
+import { useI18n } from "../i18n/useI18n";
 
 export default function Footer() {
-  const { language } = useLanguage();
+  const { lang } = useI18n();
+
+  const t = {
+    tagline:
+      lang === "fr"
+        ? "Leader tunisien du traitement thermique et de surface depuis 1990."
+        : "Tunisia’s leader in heat and surface treatment since 1990.",
+    links: lang === "fr" ? "Liens utiles" : "Quick Links",
+    contact: lang === "fr" ? "Contact" : "Contact",
+    rights: lang === "fr" ? "Tous droits réservés." : "All rights reserved.",
+    nav: {
+      home: lang === "fr" ? "Accueil" : "Home",
+      about: lang === "fr" ? "À propos" : "About",
+      services: lang === "fr" ? "Services" : "Services",
+      industries: lang === "fr" ? "Industries" : "Industries",
+      certifications: lang === "fr" ? "Certifications" : "Certifications",
+      clients: lang === "fr" ? "Clients" : "Clients",
+      contact: lang === "fr" ? "Contact" : "Contact",
+    },
+  };
 
   return (
     <footer
@@ -28,36 +48,41 @@ export default function Footer() {
         <div style={{ flex: "1 1 250px" }}>
           <img
             src="/Nlogo.png"
-            alt="F3T Logo"
-            style={{ height: "70px", marginBottom: "1rem" }} // ⬅ Bigger logo here
+            alt="F3T logo"
+            style={{ height: "70px", marginBottom: "1rem" }}
           />
-          <p style={{ lineHeight: "1.6" }}>
-            {language === "fr"
-              ? "Leader tunisien du traitement thermique et de surface depuis 1990."
-              : "Tunisia’s leader in heat and surface treatment since 1990."}
-          </p>
+          <p style={{ lineHeight: "1.6" }}>{t.tagline}</p>
         </div>
 
         {/* Column 2 */}
         <div style={{ flex: "1 1 150px" }}>
-          <h4 style={{ marginBottom: "1rem" }}>{language === "fr" ? "Liens utiles" : "Quick Links"}</h4>
+          <h4 style={{ marginBottom: "1rem" }}>{t.links}</h4>
           <ul style={{ listStyle: "none", padding: 0, lineHeight: "1.8" }}>
-            <li><Link to="/" style={footerLink}>Home</Link></li>
-            <li><Link to="/about" style={footerLink}>About</Link></li>
-            <li><Link to="/services" style={footerLink}>Services</Link></li>
-            <li><Link to="/industries" style={footerLink}>Industries</Link></li>
-            <li><Link to="/certifications" style={footerLink}>Certifications</Link></li>
-            <li><Link to="/clients" style={footerLink}>Clients</Link></li>
-            <li><Link to="/contact" style={footerLink}>Contact</Link></li>
+            <li><Link to="/" style={footerLink}>{t.nav.home}</Link></li>
+            <li><Link to="/about" style={footerLink}>{t.nav.about}</Link></li>
+            <li><Link to="/services" style={footerLink}>{t.nav.services}</Link></li>
+            <li><Link to="/industries" style={footerLink}>{t.nav.industries}</Link></li>
+            <li><Link to="/certifications" style={footerLink}>{t.nav.certifications}</Link></li>
+            <li><Link to="/clients" style={footerLink}>{t.nav.clients}</Link></li>
+            <li><Link to="/contact" style={footerLink}>{t.nav.contact}</Link></li>
           </ul>
         </div>
 
         {/* Column 3 */}
         <div style={{ flex: "1 1 200px" }}>
-          <h4 style={{ marginBottom: "1rem" }}>{language === "fr" ? "Contact" : "Contact"}</h4>
-          <p>Email: f3t_direction@topnet.tn</p>
-          <p>+216 72 677 013</p>
-          <p>{language === "fr" ? "Zriba Zaghouan" : "Zriba Zaghouan"}</p>
+          <h4 style={{ marginBottom: "1rem" }}>{t.contact}</h4>
+          <p>
+            Email:{" "}
+            <a href="mailto:f3t_direction@topnet.tn" style={{ color: "#fff" }}>
+              f3t_direction@topnet.tn
+            </a>
+          </p>
+          <p>
+            <a href="tel:+21672677013" style={{ color: "#fff" }}>
+              +216 72 677 013
+            </a>
+          </p>
+          <p>Zriba Zaghouan</p>
         </div>
       </div>
 
@@ -72,8 +97,7 @@ export default function Footer() {
           color: "#aaa",
         }}
       >
-        © {new Date().getFullYear()} F3T.{" "}
-        {language === "fr" ? "Tous droits réservés." : "All rights reserved."}
+        © {new Date().getFullYear()} F3T. {t.rights}
       </div>
     </footer>
   );

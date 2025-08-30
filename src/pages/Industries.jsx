@@ -1,44 +1,48 @@
+// src/pages/Industries.jsx
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useLanguage from "../components/useLanguage";
 import { Link } from "react-router-dom";
+import { useI18n } from "../i18n/useI18n";
+import SEO from "../components/SEO";
 
 export default function Industries() {
-  const { language } = useLanguage();
+  const { lang } = useI18n();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+  const title = lang === "fr" ? "F3T | Industries desservies" : "F3T | Industries served";
+  const description =
+    lang === "fr"
+      ? "Nous accompagnons plusieurs secteurs industriels exigeants : automobile, aéronautique, machines lourdes, fabrication d’outils."
+      : "We serve demanding industries: automotive, aerospace, heavy machinery, toolmaking.";
 
   const industries = {
     fr: [
       {
         icon: "fas fa-car",
         title: "Automobile",
-        description:
-          "Amélioration de la résistance à l’usure et de la durabilité des composants.",
+        description: "Amélioration de la résistance à l’usure et de la durabilité des composants.",
         image: "/industry-automotive.jpg",
       },
       {
         icon: "fas fa-rocket",
         title: "Aéronautique",
-        description:
-          "Respect des exigences de performance et de sécurité les plus strictes.",
+        description: "Respect des exigences de performance et de sécurité les plus strictes.",
         image: "/industry-aerospace.jpg",
       },
       {
         icon: "fas fa-industry",
         title: "Machines lourdes",
-        description:
-          "Traitement de grandes pièces pour une résistance maximale.",
+        description: "Traitement de grandes pièces pour une résistance maximale.",
         image: "/industry-heavy.jpg",
       },
       {
         icon: "fas fa-wrench",
         title: "Fabrication d’outils",
-        description:
-          "Durcissement et précision pour prolonger la durée de vie des outils.",
+        description: "Durcissement et précision pour prolonger la durée de vie des outils.",
         image: "/industry-tools.jpg",
       },
     ],
@@ -46,38 +50,36 @@ export default function Industries() {
       {
         icon: "fas fa-car",
         title: "Automotive",
-        description:
-          "Enhanced wear resistance and durability of components.",
+        description: "Enhanced wear resistance and durability of components.",
         image: "/industry-automotive.jpg",
       },
       {
         icon: "fas fa-rocket",
         title: "Aerospace",
-        description:
-          "Meeting the highest performance and safety standards.",
+        description: "Meeting the highest performance and safety standards.",
         image: "/industry-aerospace.jpg",
       },
       {
         icon: "fas fa-industry",
         title: "Heavy Machinery",
-        description:
-          "Treating large components for maximum strength.",
+        description: "Treating large components for maximum strength.",
         image: "/industry-heavy.jpg",
       },
       {
         icon: "fas fa-wrench",
         title: "Toolmaking",
-        description:
-          "Hardening and precision to extend tool lifespan.",
+        description: "Hardening and precision to extend tool lifespan.",
         image: "/industry-tools.jpg",
       },
     ],
   };
 
-  const items = industries[language];
+  const items = industries[lang];
 
   return (
-    <section style={{ padding: "3rem 1rem", background: "#f4f4f4" }}>
+    <section style={{ padding: "3rem 1rem", background:  "transparent" }}>
+      <SEO title={title} description={description} />
+
       <div style={{ maxWidth: "1100px", margin: "auto" }}>
         <h1
           data-aos="fade-up"
@@ -88,8 +90,9 @@ export default function Industries() {
             textAlign: "center",
           }}
         >
-          {language === "fr" ? "Industries desservies" : "Industries We Serve"}
+          {lang === "fr" ? "Industries desservies" : "Industries We Serve"}
         </h1>
+
         <p
           data-aos="fade-up"
           style={{
@@ -99,12 +102,12 @@ export default function Industries() {
             fontSize: "1.05rem",
           }}
         >
-          {language === "fr"
+          {lang === "fr"
             ? "Nous accompagnons plusieurs secteurs industriels exigeants grâce à notre expertise en traitement thermique et de surface."
             : "We support demanding industrial sectors through our advanced heat and surface treatment expertise."}
         </p>
 
-        {/* INDUSTRY CARDS */}
+        {/* Industry Cards */}
         <div
           style={{
             display: "grid",
@@ -117,7 +120,8 @@ export default function Industries() {
               key={index}
               data-aos="fade-up"
               style={{
-                backgroundColor: "#fff",
+                  backgroundColor: "rgba(255,255,255,0.85)",
+                backdropFilter: "saturate(120%) blur(2px)",
                 borderRadius: "12px",
                 boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
                 overflow: "hidden",
@@ -125,13 +129,11 @@ export default function Industries() {
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = "translateY(-6px)";
-                e.currentTarget.style.boxShadow =
-                  "0 8px 20px rgba(0,0,0,0.1)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.1)";
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 14px rgba(0,0,0,0.06)";
+                e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.06)";
               }}
             >
               <img
@@ -142,6 +144,7 @@ export default function Industries() {
                   height: "170px",
                   objectFit: "cover",
                 }}
+                loading="lazy"
               />
               <div style={{ padding: "1.5rem", textAlign: "center" }}>
                 <i
@@ -151,6 +154,7 @@ export default function Industries() {
                     color: "#d51820",
                     marginBottom: "0.5rem",
                   }}
+                  aria-hidden="true"
                 ></i>
                 <h3 style={{ color: "#051d40", marginBottom: "0.5rem" }}>
                   {industry.title}
@@ -163,7 +167,7 @@ export default function Industries() {
           ))}
         </div>
 
-        {/* CTA BANNER */}
+        {/* CTA Banner */}
         <div
           data-aos="fade-up"
           style={{
@@ -175,11 +179,7 @@ export default function Industries() {
             color: "#fff",
           }}
         >
-          <h2>
-            {language === "fr"
-              ? "Vous souhaitez en savoir plus ?"
-              : "Want to learn more?"}
-          </h2>
+          <h2>{lang === "fr" ? "Vous souhaitez en savoir plus ?" : "Want to learn more?"}</h2>
           <Link
             to="/services"
             style={{
@@ -189,7 +189,7 @@ export default function Industries() {
               fontSize: "1.05rem",
             }}
           >
-            {language === "fr"
+            {lang === "fr"
               ? "Découvrez nos services adaptés à votre industrie"
               : "Explore services tailored to your industry"}
           </Link>

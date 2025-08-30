@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://<your-deploy-domain>/</loc></url>
+  <url><loc>https://<your-deploy-domain>/about</loc></url>
+  <url><loc>https://<your-deploy-domain>/services</loc></url>
+  <url><loc>https://<your-deploy-domain>/industries</loc></url>
+  <url><loc>https://<your-deploy-domain>/certifications</loc></url>
+  <url><loc>https://<your-deploy-domain>/clients</loc></url>
+  <url><loc>https://<your-deploy-domain>/contact</loc></url>
+</urlset>

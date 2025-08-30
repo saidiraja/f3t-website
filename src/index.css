@@ -1,56 +1,70 @@
 :root {
+  /* your base typography + rendering */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  /* keep quality of text rendering */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --bg-color: #ffffff;
-  --text-color: #051d40;
-  --card-bg: #f7f7f7;
-}
-[data-theme="dark"] {
-  --bg-color: #1f1f1f;
-  --text-color: #ffffff;
-  --card-bg: #2e2e2e;
-}
-/* Use Google Font */
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  /* THEME VARIABLES (light) */
+  --brand: #d51820;                      /* F3T red */
+  --bg-color: #ffffff;                   /* page background (under global image) */
+  --text-color: #051d40;                 /* default text */
+  --muted: #475569;                      /* secondary text */
+  --card-bg: rgba(255, 255, 255, 0.92);  /* card surface */
+  --bg-overlay: rgba(0, 0, 0, 0.45);     /* global overlay above bg image */
+
+  /* optional hint for UA, but we control theme via :root.dark */
+  color-scheme: light;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* DARK MODE (toggled by adding class="dark" on <html>) */
+:root.dark {
+  --bg-color: #0b1424;
+  --text-color: #f5f5f5;
+  --muted: #cbd5e1;
+  --card-bg: rgba(15, 23, 42, 0.88);
+  --bg-overlay: rgba(0, 0, 0, 0.70);
+  color-scheme: dark;
 }
-a:hover {
-  color: #535bf2;
+
+/* Base page */
+html, body, #root {
+  height: 100%;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+
+  /* Let the global SiteBackground handle the image & overlay.
+     We still set a solid bg as a fallback under the image. */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: 'Poppins', sans-serif; /* your chosen font */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Links use brand color */
+a {
+  font-weight: 500;
+  color: var(--brand);
+  text-decoration: none;
+}
+a:hover {
+  opacity: 0.9;
 }
 
+/* Headings */
+h1 { font-size: 3.2em; line-height: 1.1; }
+
+/* Buttons: keep your defaults but improve focus */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -59,26 +73,30 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, filter 0.2s ease;
 }
-button:hover {
-  border-color: #646cff;
-}
+button:hover { border-color: var(--brand); filter: brightness(0.97); }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 3px solid color-mix(in oklab, var(--brand), white 20%);
+  outline-offset: 2px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Images are responsive by default */
+img { max-width: 100%; height: auto; display: block; }
+
+/* Simple utilities you can use in components if needed */
+.bg-card { background: var(--card-bg); color: var(--text-color); }
+.text-muted { color: var(--muted); }
+
+/* Remove old template centering (caused blank/centered layouts)
+   NOTE: You had this before:
+   body { display:flex; place-items:center; }
+   We DO NOT want that globally. If you need centering, do it per section. */
+
+/* Optional: lightweight media query tweaks if you used them before */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
