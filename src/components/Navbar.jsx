@@ -1,11 +1,17 @@
 // src/components/Navbar.jsx
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import LangSwitch from "./LangSwitch";
+import { useAdmin } from "../admin/AdminContext";
 
 const Navbar = () => {
   const location = useLocation();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const { loggedIn, logout } = useAdmin();
+  const navigate = useNavigate();
+
+  const T = (fr, en) => (lang === "fr" ? fr : en);
+  const safe = (obj, key, fallback) => (obj && obj[key]) || fallback;
 
   const isActive = (path) => location.pathname === path;
 
@@ -28,6 +34,11 @@ const Navbar = () => {
     backgroundColor: "#d51820",
     transition: "width 0.2s ease",
   });
+
+  const onLogout = () => {
+    logout();
+    navigate("/admin/login");
+  };
 
   return (
     <nav
@@ -61,81 +72,59 @@ const Navbar = () => {
 
       {/* Nav links */}
       <div style={{ display: "flex", alignItems: "center", gap: "1.2rem", flexWrap: "wrap" }}>
-        <div style={{ position: "relative" }}>
-          <Link to="/" style={linkStyle("/")} aria-current={isActive("/") ? "page" : undefined}>
-            {t.nav.home}
-          </Link>
-          <span style={linkUnderline("/")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/about"
-            style={linkStyle("/about")}
-            aria-current={isActive("/about") ? "page" : undefined}
-          >
-            {t.nav.about}
-          </Link>
-          <span style={linkUnderline("/about")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/services"
-            style={linkStyle("/services")}
-            aria-current={isActive("/services") ? "page" : undefined}
-          >
-            {t.nav.services}
-          </Link>
-          <span style={linkUnderline("/services")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/industries"
-            style={linkStyle("/industries")}
-            aria-current={isActive("/industries") ? "page" : undefined}
-          >
-            {t.nav.industries}
-          </Link>
-          <span style={linkUnderline("/industries")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/certifications"
-            style={linkStyle("/certifications")}
-            aria-current={isActive("/certifications") ? "page" : undefined}
-          >
-            {t.nav.certifications}
-          </Link>
-          <span style={linkUnderline("/certifications")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/clients"
-            style={linkStyle("/clients")}
-            aria-current={isActive("/clients") ? "page" : undefined}
-          >
-            {t.nav.clients}
-          </Link>
-          <span style={linkUnderline("/clients")}></span>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <Link
-            to="/contact"
-            style={linkStyle("/contact")}
-            aria-current={isActive("/contact") ? "page" : undefined}
-          >
-            {t.nav.contact}
-          </Link>
-          <span style={linkUnderline("/contact")}></span>
-        </div>
+        {[
+          { path: "/", label: safe(t?.nav, "home", T("Accueil", "Home")) },
+          { path: "/about", label: safe(t?.nav, "about", T("À propos", "About")) },
+          { path: "/services", label: safe(t?.nav, "services", T("Services", "Services")) },
+          { path: "/industries", label: safe(t?.nav, "industries", T("Industries", "Industries")) },
+          { path: "/certifications", label: safe(t?.nav, "certifications", T("Certifications", "Certifications")) },
+          { path: "/clients", label: safe(t?.nav, "clients", T("Clients", "Clients")) },
+          { path: "/news", label: T("Actualités", "News") },
+          { path: "/contact", label: safe(t?.nav, "contact", T("Contact", "Contact")) },
+        ].map(({ path, label }) => (
+          <div key={path} style={{ position: "relative" }}>
+            <Link to={path} style={linkStyle(path)} aria-current={isActive(path) ? "page" : undefined}>
+              {label}
+            </Link>
+            <span style={linkUnderline(path)}></span>
+          </div>
+        ))}
 
         {/* Language switch */}
         <LangSwitch />
+
+        {/* Admin */}
+        {!loggedIn ? (
+          <div style={{ position: "relative" }}>
+            <Link
+              to="/admin/login"
+              style={linkStyle("/admin/login")}
+              aria-current={isActive("/admin/login") ? "page" : undefined}
+            >
+              Admin
+            </Link>
+            <span style={linkUnderline("/admin/login")}></span>
+          </div>
+        ) : (
+          <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+            <Link to="/admin" style={linkStyle("/admin")} aria-current={isActive("/admin") ? "page" : undefined}>
+              {T("Tableau de bord", "Dashboard")}
+            </Link>
+            <button
+              onClick={onLogout}
+              style={{
+                background: "transparent",
+                border: "1px solid #d51820",
+                color: "#d51820",
+                padding: "0.2rem 0.5rem",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              {T("Déconnexion", "Logout")}
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
