@@ -1,0 +1,32 @@
+{
+  "admin_users": [
+    {
+      "id": 1,
+      "email": "admin@f3t.tn",
+      "password_hash": "$2a$10$YVhJ/vOVigD7PX2cULthw.WpnGPgUWKEHETKJ0Fl24Gd0KgakrlFe"
+    }
+  ],
+  "home": {
+    "id": 1,
+    "title_fr": "",
+    "title_en": "",
+    "intro_fr": "",
+    "intro_en": "",
+    "updated_at": "2025-09-09T16:28:54.692Z"
+  },
+  "about": {
+    "id": 1,
+    "mission_fr": "",
+    "mission_en": "",
+    "vision_fr": "",
+    "vision_en": "",
+    "values_fr": "",
+    "values_en": "",
+    "updated_at": "2025-09-09T16:28:54.693Z"
+  },
+  "services": [],
+  "industries": [],
+  "certifications": [],
+  "clients": [],
+  "news": []
+}
