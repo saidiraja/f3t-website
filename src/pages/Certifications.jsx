@@ -4,6 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useI18n } from "../i18n/useI18n";
 import SEO from "../components/SEO";
+import EditBar from "../components/EditBar";
 
 export default function Certifications() {
   const { lang } = useI18n();
@@ -20,6 +21,7 @@ export default function Certifications() {
 
   return (
     <section style={{ padding: "2rem", background:  "transparent" }}>
+      <EditBar manageTo="/admin/certifications" />
       <SEO title={title} description={description} />
 
       <div style={{ maxWidth: "900px", margin: "auto" }}>
@@ -39,8 +41,8 @@ export default function Certifications() {
         <div
           data-aos="fade-up"
           style={{
-             backgroundColor: "rgba(255,255,255,0.85)",
-                backdropFilter: "saturate(120%) blur(2px)",
+            backgroundColor: "rgba(255,255,255,0.85)",
+            backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
@@ -64,12 +66,11 @@ export default function Certifications() {
                 ? "F3T est certifiée ISO 9001:2015 pour la qualité de ses services en traitement thermique et de surface."
                 : "F3T is ISO 9001:2015 certified for the quality of its heat and surface treatment services."}
             </p>
-
-            {/* Optional: show a badge if you have one in /public */}
-            {/* <img src="/iso-9001-badge.png" alt="ISO 9001:2015 badge" style={{ height: 48 }} loading="lazy" /> */}
-
-            {/* Optional: link to the certificate PDF if available */}
-            {/* <a href="/certificates/iso9001.pdf" target="_blank" rel="noopener noreferrer"> {lang==="fr" ? "Voir le certificat" : "View certificate"} </a> */}
+            {/* Optional assets for later */}
+            {/* <img src={asset("iso-9001-badge.png")} alt="ISO 9001:2015 badge" style={{ height: 48 }} loading="lazy" /> */}
+            {/* <a href={asset("certificates/iso9001.pdf")} target="_blank" rel="noopener noreferrer">
+                {lang==="fr" ? "Voir le certificat" : "View certificate"}
+              </a> */}
           </div>
         </div>
 
@@ -77,8 +78,8 @@ export default function Certifications() {
         <div
           data-aos="fade-up"
           style={{
-              backgroundColor: "rgba(255,255,255,0.85)",
-                backdropFilter: "saturate(120%) blur(2px)",
+            backgroundColor: "rgba(255,255,255,0.85)",
+            backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",

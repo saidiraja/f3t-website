@@ -7,6 +7,8 @@ import { useI18n } from "../i18n/useI18n";
 import SEO from "../components/SEO";
 import { api } from "../api";
 import { pickLang } from "../utils/lang";
+import EditBar from "../components/EditBar";
+import { asset } from "../utils/asset";
 
 export default function About() {
   const { lang } = useI18n();
@@ -23,7 +25,6 @@ export default function About() {
     ? "F3T, fondée en 1990, est la référence en Tunisie pour le traitement thermique et de surface."
     : "Founded in 1990, F3T is Tunisia’s reference for heat & surface treatment.";
 
-  // Values can be stored as multiline text in admin → split nicely for bullets
   const rawValues = about ? pickLang(lang, about.values_fr, about.values_en) : "";
   const values = rawValues
     ? rawValues.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean)
@@ -52,13 +53,14 @@ export default function About() {
 
   return (
     <motion.section initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration: .5 }} style={styles.section}>
+      <EditBar manageTo="/admin/about" />
       <SEO title={title} description={description} />
 
       <div style={styles.container}>
         {err && <p style={{color:'crimson'}}>{err}</p>}
 
         <div data-aos="fade-up" style={styles.heroImage}>
-          <img src="/team.jpg" alt={lang === "fr" ? "Équipe F3T" : "F3T team"} style={{ width:"100%", borderRadius:12, maxHeight:320, objectFit:"cover" }} loading="lazy" />
+          <img src={asset("team.jpg")} alt={lang === "fr" ? "Équipe F3T" : "F3T team"} style={{ width:"100%", borderRadius:12, maxHeight:320, objectFit:"cover" }} loading="lazy" />
         </div>
 
         <div data-aos="fade-up" style={styles.card}>
@@ -108,7 +110,7 @@ export default function About() {
   );
 }
 
-const styles = { /* keep your styling; unchanged from your file */ 
+const styles = {
   section:{background:"transparent",color:"#333",padding:"4rem 1rem"},
   container:{maxWidth:"1000px",margin:"auto"},
   heroImage:{marginBottom:"2rem"},

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import LangSwitch from "./LangSwitch";
 import { useAdmin } from "../admin/AdminContext";
+import { asset } from "../utils/asset";
 
 const Navbar = () => {
   const location = useLocation();
@@ -60,7 +61,7 @@ const Navbar = () => {
       {/* Logo & brand */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <img
-          src="/Nlogo.png"
+          src={asset("Nlogo.png")}
           alt="F3T"
           style={{ height: "40px", width: "auto" }}
           loading="eager"

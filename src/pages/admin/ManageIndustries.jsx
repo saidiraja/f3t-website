@@ -1,3 +1,4 @@
+// src/pages/admin/ManageIndustries.jsx
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 
@@ -6,24 +7,38 @@ const EMPTY = { name_fr:'', name_en:'', description_fr:'', description_en:'', im
 export default function ManageIndustries() {
   const [list, setList] = useState([]);
   const [form, setForm] = useState(EMPTY);
+  const [file, setFile] = useState(null);
   const [err, setErr] = useState('');
 
   const load = () => api.adminListIndustries().then(setList).catch(e=>setErr(e.message));
   useEffect(load, []);
 
+  async function maybeUpload(selectedFile) {
+    if (!selectedFile) return null;
+    const up = await api.uploadFile(selectedFile);
+    return up?.url || null;
+  }
+
   const create = async () => {
     setErr('');
     try {
-      const created = await api.adminCreateIndustry(form);
+      const url = await maybeUpload(file);
+      const created = await api.adminCreateIndustry({ ...form, image_url: url || form.image_url });
       setForm(EMPTY);
+      setFile(null);
       setList(l => [created, ...l]);
     } catch (e) { setErr(e.message); }
   };
 
-  const save = async (id, patch) => {
+  const save = async (id, patch, newFile) => {
     setErr('');
     try {
-      const updated = await api.adminUpdateIndustry(id, patch);
+      let url = patch.image_url || '';
+      if (newFile) {
+        const up = await api.uploadFile(newFile);
+        url = up?.url || url;
+      }
+      const updated = await api.adminUpdateIndustry(id, { ...patch, image_url: url });
       setList(l => l.map(x => x.id === id ? updated : x));
     } catch (e) { setErr(e.message); }
   };
@@ -50,6 +65,7 @@ export default function ManageIndustries() {
           <label>Description (FR) <textarea rows={3} value={form.description_fr} onChange={e=>setForm({...form, description_fr:e.target.value})}/></label>
           <label>Description (EN) <textarea rows={3} value={form.description_en} onChange={e=>setForm({...form, description_en:e.target.value})}/></label>
           <label>Image URL <input value={form.image_url} onChange={e=>setForm({...form, image_url:e.target.value})}/></label>
+          <label>OR Upload <input type="file" onChange={e=>setFile(e.target.files?.[0] || null)}/></label>
         </div>
         <button onClick={create} style={{ marginTop:8 }}>Create</button>
       </section>
@@ -67,14 +83,18 @@ export default function ManageIndustries() {
 
 function Row({ item, onSave, onDelete }) {
   const [e, setE] = useState(item);
+  const [file, setFile] = useState(null);
   return (
     <tr>
       <td>{item.id}</td>
       <td><input value={e.name_fr||''} onChange={ev=>setE({...e, name_fr:ev.target.value})}/></td>
       <td><input value={e.name_en||''} onChange={ev=>setE({...e, name_en:ev.target.value})}/></td>
-      <td><input value={e.image_url||''} onChange={ev=>setE({...e, image_url:ev.target.value})}/></td>
+      <td style={{maxWidth:220}}>
+        <input value={e.image_url||''} onChange={ev=>setE({...e, image_url:ev.target.value})}/>
+        <div style={{marginTop:6}}><input type="file" onChange={ev=>setFile(ev.target.files?.[0] || null)} /></div>
+      </td>
       <td style={{whiteSpace:'nowrap'}}>
-        <button onClick={()=>onSave(item.id, e)}>Save</button>
+        <button onClick={()=>onSave(item.id, e, file)}>Save</button>
         <button onClick={onDelete} style={{marginLeft:8}}>Delete</button>
       </td>
     </tr>

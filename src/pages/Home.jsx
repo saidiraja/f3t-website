@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import SEO from "../components/SEO";
+import EditBar from "../components/EditBar";
+import { asset } from "../utils/asset";
 
 export default function Home() {
   const { lang } = useI18n();
@@ -45,6 +47,7 @@ export default function Home() {
       transition={{ duration: 0.6 }}
       style={styles.section}
     >
+      <EditBar manageTo="/admin/home" />
       <SEO title={title} description={description} />
 
       {/* Background Overlay */}
@@ -152,10 +155,10 @@ export default function Home() {
   );
 }
 
-// STYLES
+// STYLES (only change: use asset() for the background url)
 const styles = {
   section: {
-    background: "url('/bg-metal.jpg') center/cover no-repeat",
+    background: `url('${asset("bg-metal.jpg")}') center/cover no-repeat`,
     color: "#fff",
     paddingBottom: "6rem",
     position: "relative",

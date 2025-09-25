@@ -1,6 +1,7 @@
 // src/components/Footer.jsx
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
+import { asset } from "../utils/asset";
 
 export default function Footer() {
   const { lang } = useI18n();
@@ -47,7 +48,7 @@ export default function Footer() {
         {/* Column 1 */}
         <div style={{ flex: "1 1 250px" }}>
           <img
-            src="/Nlogo.png"
+            src={asset("Nlogo.png")}
             alt="F3T logo"
             style={{ height: "70px", marginBottom: "1rem" }}
           />

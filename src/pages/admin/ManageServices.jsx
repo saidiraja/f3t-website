@@ -1,3 +1,4 @@
+// src/pages/admin/ManageServices.jsx
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 

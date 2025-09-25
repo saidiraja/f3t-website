@@ -1,4 +1,6 @@
 // src/components/SiteBackground.jsx
+import { asset } from "../utils/asset";
+
 export default function SiteBackground() {
   return (
     <>
@@ -7,7 +9,7 @@ export default function SiteBackground() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "url('/bg-metal.jpg') center/cover no-repeat fixed",
+          background: `url('${asset("bg-metal.jpg")}') center/cover no-repeat fixed`,
           zIndex: -2,
         }}
       />

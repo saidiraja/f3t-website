@@ -1,28 +1,25 @@
 // src/admin/AdminContext.jsx
-import { createContext, useContext, useMemo, useEffect, useState } from "react";
-import { api, setToken } from "../api";
+import { createContext, useContext, useMemo, useState } from "react";
+import api, { setToken, getToken } from "../api";
 
-const Ctx = createContext();
+const Ctx = createContext(null);
 
 export default function AdminProvider({ children }) {
-  const [token, _setToken] = useState(() => localStorage.getItem("f3t_token") || null);
+  // initialize from API client's stored token
+  const [loggedIn, setLoggedIn] = useState(!!getToken());
 
-  useEffect(() => { setToken(token); }, [token]);
+  async function login(email, password) {
+    // api.login will set the token internally via setToken()
+    await api.login(email, password);
+    setLoggedIn(true);
+  }
 
-  const login = async (email, password) => {
-    const data = await api.login(email, password); // { token }
-    if (!data?.token) throw new Error("Invalid credentials");
-    localStorage.setItem("f3t_token", data.token);
-    _setToken(data.token);
-  };
+  function logout() {
+    setToken(null);        // clears token from memory + localStorage
+    setLoggedIn(false);
+  }
 
-  const logout = () => {
-    localStorage.removeItem("f3t_token");
-    _setToken(null);
-    setToken(null);
-  };
-
-  const value = useMemo(() => ({ loggedIn: !!token, token, login, logout }), [token]);
+  const value = useMemo(() => ({ loggedIn, login, logout }), [loggedIn]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

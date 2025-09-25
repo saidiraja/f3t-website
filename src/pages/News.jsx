@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import { useI18n } from "../i18n/useI18n";
 import { api } from "../api";
+import EditBar from "../components/EditBar";
 
 export default function News() {
   const { lang } = useI18n();
@@ -46,6 +47,7 @@ export default function News() {
 
   return (
     <main className="container">
+      <EditBar manageTo="/admin/news" />
       <SEO title={pageTitle} description={pageDesc} />
       <section className="card" style={{ marginBottom: 16 }}>
         <h1 style={{ marginBottom: 8 }}>{pageTitle}</h1>

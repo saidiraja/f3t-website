@@ -1,10 +1,11 @@
-// src/pages/Industries.jsx
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/useI18n";
 import SEO from "../components/SEO";
+import { asset } from "../utils/asset";
+import EditBar from "../components/EditBar";
 
 export default function Industries() {
   const { lang } = useI18n();
@@ -25,25 +26,25 @@ export default function Industries() {
         icon: "fas fa-car",
         title: "Automobile",
         description: "Amélioration de la résistance à l’usure et de la durabilité des composants.",
-        image: "/industry-automotive.jpg",
+        image: asset("industry-automotive.jpg"),
       },
       {
         icon: "fas fa-rocket",
         title: "Aéronautique",
         description: "Respect des exigences de performance et de sécurité les plus strictes.",
-        image: "/industry-aerospace.jpg",
+        image: asset("industry-aerospace.jpg"),
       },
       {
         icon: "fas fa-industry",
         title: "Machines lourdes",
         description: "Traitement de grandes pièces pour une résistance maximale.",
-        image: "/industry-heavy.jpg",
+        image: asset("industry-heavy.jpg"),
       },
       {
         icon: "fas fa-wrench",
         title: "Fabrication d’outils",
         description: "Durcissement et précision pour prolonger la durée de vie des outils.",
-        image: "/industry-tools.jpg",
+        image: asset("industry-tools.jpg"),
       },
     ],
     en: [
@@ -51,25 +52,25 @@ export default function Industries() {
         icon: "fas fa-car",
         title: "Automotive",
         description: "Enhanced wear resistance and durability of components.",
-        image: "/industry-automotive.jpg",
+        image: asset("industry-automotive.jpg"),
       },
       {
         icon: "fas fa-rocket",
         title: "Aerospace",
         description: "Meeting the highest performance and safety standards.",
-        image: "/industry-aerospace.jpg",
+        image: asset("industry-aerospace.jpg"),
       },
       {
         icon: "fas fa-industry",
         title: "Heavy Machinery",
         description: "Treating large components for maximum strength.",
-        image: "/industry-heavy.jpg",
+        image: asset("industry-heavy.jpg"),
       },
       {
         icon: "fas fa-wrench",
         title: "Toolmaking",
         description: "Hardening and precision to extend tool lifespan.",
-        image: "/industry-tools.jpg",
+        image: asset("industry-tools.jpg"),
       },
     ],
   };
@@ -77,7 +78,8 @@ export default function Industries() {
   const items = industries[lang];
 
   return (
-    <section style={{ padding: "3rem 1rem", background:  "transparent" }}>
+    <section style={{ padding: "3rem 1rem", background: "transparent" }}>
+      <EditBar manageTo="/admin/industries" />
       <SEO title={title} description={description} />
 
       <div style={{ maxWidth: "1100px", margin: "auto" }}>
@@ -107,7 +109,6 @@ export default function Industries() {
             : "We support demanding industrial sectors through our advanced heat and surface treatment expertise."}
         </p>
 
-        {/* Industry Cards */}
         <div
           style={{
             display: "grid",
@@ -120,7 +121,7 @@ export default function Industries() {
               key={index}
               data-aos="fade-up"
               style={{
-                  backgroundColor: "rgba(255,255,255,0.85)",
+                backgroundColor: "rgba(255,255,255,0.85)",
                 backdropFilter: "saturate(120%) blur(2px)",
                 borderRadius: "12px",
                 boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
@@ -139,26 +140,16 @@ export default function Industries() {
               <img
                 src={industry.image}
                 alt={industry.title}
-                style={{
-                  width: "100%",
-                  height: "170px",
-                  objectFit: "cover",
-                }}
+                style={{ width: "100%", height: "170px", objectFit: "cover" }}
                 loading="lazy"
               />
               <div style={{ padding: "1.5rem", textAlign: "center" }}>
                 <i
                   className={industry.icon}
-                  style={{
-                    fontSize: "2rem",
-                    color: "#d51820",
-                    marginBottom: "0.5rem",
-                  }}
+                  style={{ fontSize: "2rem", color: "#d51820", marginBottom: "0.5rem" }}
                   aria-hidden="true"
                 ></i>
-                <h3 style={{ color: "#051d40", marginBottom: "0.5rem" }}>
-                  {industry.title}
-                </h3>
+                <h3 style={{ color: "#051d40", marginBottom: "0.5rem" }}>{industry.title}</h3>
                 <p style={{ color: "#444", fontSize: "1rem", lineHeight: "1.5" }}>
                   {industry.description}
                 </p>
@@ -167,7 +158,6 @@ export default function Industries() {
           ))}
         </div>
 
-        {/* CTA Banner */}
         <div
           data-aos="fade-up"
           style={{

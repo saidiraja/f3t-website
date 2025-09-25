@@ -5,6 +5,8 @@ import "aos/dist/aos.css";
 import { useI18n } from "../i18n/useI18n";
 import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
+import EditBar from "../components/EditBar";
+import { asset } from "../utils/asset";
 
 export default function Services() {
   const { lang } = useI18n();
@@ -110,13 +112,14 @@ export default function Services() {
 
   return (
     <section style={{ padding: "3rem 1rem", backgroundColor:  "transparent" }}>
+      <EditBar manageTo="/admin/services" />
       <SEO title={title} description={description} />
 
       <div style={{ maxWidth: "1100px", margin: "auto" }}>
         {/* Header image */}
         <div data-aos="fade-up" style={{ marginBottom: "2rem" }}>
           <img
-            src="/factory.jpg"
+            src={asset("factory.jpg")}
             alt={lang === "fr" ? "Atelier de traitement thermique" : "Heat treatment factory"}
             style={{
               width: "100%",
@@ -146,8 +149,8 @@ export default function Services() {
         <div
           data-aos="fade-up"
           style={{
-              backgroundColor: "rgba(255,255,255,0.85)",
-                backdropFilter: "saturate(120%) blur(2px)",
+            backgroundColor: "rgba(255,255,255,0.85)",
+            backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
@@ -186,7 +189,7 @@ export default function Services() {
               key={index}
               data-aos="fade-up"
               style={{
-                  backgroundColor: "rgba(255,255,255,0.85)",
+                backgroundColor: "rgba(255,255,255,0.85)",
                 backdropFilter: "saturate(120%) blur(2px)",
                 padding: "2rem",
                 borderRadius: "16px",

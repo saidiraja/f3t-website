@@ -1,3 +1,4 @@
+// src/pages/admin/Dashboard.jsx
 import { Link, Outlet } from 'react-router-dom';
 import { useAdmin } from '../../admin/AdminContext';
 
@@ -6,7 +7,7 @@ export default function Dashboard() {
   return (
     <div style={{display:'grid', gridTemplateColumns:'220px 1fr', minHeight:'80vh'}}>
       <aside style={{padding:'1rem', borderRight:'1px solid #ddd', background:'rgba(255,255,255,0.6)'}}>
-        <h2>Admin</h2>
+        <h2 style={{marginTop:0}}>Admin</h2>
         <nav style={{display:'grid', gap:8}}>
           <Link to="/admin/home">Home</Link>
           <Link to="/admin/about">About</Link>
