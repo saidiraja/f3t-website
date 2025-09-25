@@ -1,57 +1,101 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 
+const EMPTY = { title_fr:'', title_en:'', body_fr:'', body_en:'', image_url:'' };
+
 export default function ManageNews() {
   const [list, setList] = useState([]);
-  const [form, setForm] = useState({ title_fr:'', title_en:'', body_fr:'', body_en:'', image_url:'' });
+  const [form, setForm] = useState(EMPTY);
   const [file, setFile] = useState(null);
-  const load = () => api.getNews().then(setList);
+  const [err, setErr] = useState('');
+
+  const load = () => api.adminListNews().then(setList).catch(e=>setErr(e.message));
   useEffect(load, []);
 
-  const add = async () => {
-    let image_url = form.image_url;
-    if (file) { const up = await api.upload(file); image_url = up.url; }
-    await api.addNews({ ...form, image_url });
-    setForm({ title_fr:'', title_en:'', body_fr:'', body_en:'', image_url:'' }); setFile(null); load();
+  async function maybeUpload() {
+    if (!file) return null;
+    const up = await api.uploadFile(file);
+    return up?.url || null;
+  }
+
+  const create = async () => {
+    setErr('');
+    try {
+      const url = await maybeUpload();
+      const created = await api.adminCreateNews({ ...form, image_url: url || form.image_url });
+      setForm(EMPTY);
+      setFile(null);
+      setList(l => [created, ...l]);
+    } catch (e) { setErr(e.message); }
   };
-  const save = async (id, row) => { await api.updateNews(id, row); load(); };
-  const del = async (id) => { await api.deleteNews(id); load(); };
+
+  const save = async (id, patch, newFile) => {
+    setErr('');
+    try {
+      let url = patch.image_url || '';
+      if (newFile) {
+        const up = await api.uploadFile(newFile);
+        url = up?.url || url;
+      }
+      const updated = await api.adminUpdateNews(id, { ...patch, image_url: url });
+      setList(l => l.map(x => x.id === id ? updated : x));
+    } catch (e) { setErr(e.message); }
+  };
+
+  const del = async (id) => {
+    if (!confirm('Delete news item?')) return;
+    setErr('');
+    try {
+      await api.adminDeleteNews(id);
+      setList(l => l.filter(x => x.id !== id));
+    } catch (e) { setErr(e.message); }
+  };
 
   return (
     <div>
       <h2>News</h2>
-      <div style={{display:'grid', gap:8}}>
-        <input placeholder="Title FR" value={form.title_fr} onChange={e=>setForm({...form, title_fr:e.target.value})}/>
-        <input placeholder="Title EN" value={form.title_en} onChange={e=>setForm({...form, title_en:e.target.value})}/>
-        <textarea placeholder="Body FR" rows={3} value={form.body_fr} onChange={e=>setForm({...form, body_fr:e.target.value})}/>
-        <textarea placeholder="Body EN" rows={3} value={form.body_en} onChange={e=>setForm({...form, body_en:e.target.value})}/>
-        <input placeholder="Image URL (optional)" value={form.image_url} onChange={e=>setForm({...form, image_url:e.target.value})}/>
-        <div><input type="file" onChange={e=>setFile(e.target.files[0])}/> <button onClick={add}>Add post</button></div>
-      </div>
+      {err && <p style={{color:'crimson'}}>{err}</p>}
 
-      <ul style={{marginTop:16, display:'grid', gap:12}}>
-        {list.map(n => <NewsItem key={n.id} n={n} onSave={save} onDelete={del} />)}
-      </ul>
+      <section style={{ border:'1px solid #ddd', padding:12, marginBottom:16 }}>
+        <h4>New Article</h4>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+          <label>Title (FR) <input value={form.title_fr} onChange={e=>setForm({...form, title_fr:e.target.value})}/></label>
+          <label>Title (EN) <input value={form.title_en} onChange={e=>setForm({...form, title_en:e.target.value})}/></label>
+          <label>Body (FR) <textarea rows={3} value={form.body_fr} onChange={e=>setForm({...form, body_fr:e.target.value})}/></label>
+          <label>Body (EN) <textarea rows={3} value={form.body_en} onChange={e=>setForm({...form, body_en:e.target.value})}/></label>
+          <label>Image URL <input value={form.image_url} onChange={e=>setForm({...form, image_url:e.target.value})}/></label>
+          <label>OR Upload <input type="file" onChange={e=>setFile(e.target.files?.[0] || null)}/></label>
+        </div>
+        <button onClick={create} style={{ marginTop:8 }}>Create</button>
+      </section>
+
+      <table border="1" cellPadding="8" style={{ width:'100%' }}>
+        <thead><tr><th>ID</th><th>Title FR</th><th>Title EN</th><th>Image</th><th>Actions</th></tr></thead>
+        <tbody>
+          {list.map(item => <Row key={item.id} item={item} onSave={save} onDelete={()=>del(item.id)} />)}
+          {!list.length && <tr><td colSpan={5}>No news yet.</td></tr>}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function NewsItem({ n, onSave, onDelete }) {
-  const [e, setE] = useState(n);
+function Row({ item, onSave, onDelete }) {
+  const [e, setE] = useState(item);
+  const [file, setFile] = useState(null);
   return (
-    <li style={{border:'1px solid #ddd', borderRadius:8, padding:12}}>
-      {e.image_url && <img src={e.image_url} alt="" style={{maxHeight:120}} />}
-      <div style={{display:'grid', gap:6}}>
-        <input value={e.title_fr||''} onChange={ev=>setE({...e, title_fr:ev.target.value})}/>
-        <input value={e.title_en||''} onChange={ev=>setE({...e, title_en:ev.target.value})}/>
-        <textarea rows={3} value={e.body_fr||''} onChange={ev=>setE({...e, body_fr:ev.target.value})}/>
-        <textarea rows={3} value={e.body_en||''} onChange={ev=>setE({...e, body_en:ev.target.value})}/>
+    <tr>
+      <td>{item.id}</td>
+      <td><input value={e.title_fr||''} onChange={ev=>setE({...e, title_fr:ev.target.value})}/></td>
+      <td><input value={e.title_en||''} onChange={ev=>setE({...e, title_en:ev.target.value})}/></td>
+      <td style={{maxWidth:220}}>
         <input value={e.image_url||''} onChange={ev=>setE({...e, image_url:ev.target.value})}/>
-      </div>
-      <div style={{marginTop:8}}>
-        <button onClick={()=>onSave(e.id, e)}>Save</button>
-        <button onClick={()=>onDelete(e.id)} style={{marginLeft:8}}>Delete</button>
-      </div>
-    </li>
+        <div style={{marginTop:6}}><input type="file" onChange={ev=>setFile(ev.target.files?.[0] || null)} /></div>
+      </td>
+      <td style={{whiteSpace:'nowrap'}}>
+        <button onClick={()=>onSave(item.id, e, file)}>Save</button>
+        <button onClick={onDelete} style={{marginLeft:8}}>Delete</button>
+      </td>
+    </tr>
   );
 }

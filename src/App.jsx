@@ -1,5 +1,5 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -46,7 +46,7 @@ const NotFound = () => (
   </div>
 );
 
-// Small guard for protected admin routes
+// Guard for protected admin routes
 function Protected({ children }) {
   const { loggedIn } = useAdmin();
   return loggedIn ? children : <Navigate to="/admin/login" replace />;
@@ -66,190 +66,60 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Public routes */}
-        <Route
-          path="/"
-          element={
-            <motion.div {...pageTransition}>
-              <Home />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <motion.div {...pageTransition}>
-              <About />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            <motion.div {...pageTransition}>
-              <Services />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/industries"
-          element={
-            <motion.div {...pageTransition}>
-              <Industries />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/certifications"
-          element={
-            <motion.div {...pageTransition}>
-              <Certifications />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            <motion.div {...pageTransition}>
-              <Clients />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/news"
-          element={
-            <motion.div {...pageTransition}>
-              <News />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/contact"
-          element={
-            <motion.div {...pageTransition}>
-              <Contact />
-            </motion.div>
-          }
-        />
+        <Route path="/" element={<motion.div {...pageTransition}><Home /></motion.div>} />
+        <Route path="/about" element={<motion.div {...pageTransition}><About /></motion.div>} />
+        <Route path="/services" element={<motion.div {...pageTransition}><Services /></motion.div>} />
+        <Route path="/industries" element={<motion.div {...pageTransition}><Industries /></motion.div>} />
+        <Route path="/certifications" element={<motion.div {...pageTransition}><Certifications /></motion.div>} />
+        <Route path="/clients" element={<motion.div {...pageTransition}><Clients /></motion.div>} />
+        <Route path="/news" element={<motion.div {...pageTransition}><News /></motion.div>} />
+        <Route path="/contact" element={<motion.div {...pageTransition}><Contact /></motion.div>} />
 
         {/* Admin routes */}
-        <Route
-          path="/admin/login"
-          element={
-            <motion.div {...pageTransition}>
-              <AdminLogin />
-            </motion.div>
-          }
-        />
-
-        {/* We mount the dashboard shell and render sub-pages inside it */}
+        <Route path="/admin/login" element={<motion.div {...pageTransition}><AdminLogin /></motion.div>} />
         <Route
           path="/admin"
           element={
             <Protected>
-              <motion.div {...pageTransition}>
-                <AdminDashboard />
-              </motion.div>
+              <motion.div {...pageTransition}><AdminDashboard /></motion.div>
             </Protected>
           }
         >
-          <Route
-            path="home"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageHome />
-              </motion.div>
-            }
-          />
-          <Route
-            path="about"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageAbout />
-              </motion.div>
-            }
-          />
-          <Route
-            path="services"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageServices />
-              </motion.div>
-            }
-          />
-          <Route
-            path="industries"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageIndustries />
-              </motion.div>
-            }
-          />
-          <Route
-            path="certifications"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageCertifications />
-              </motion.div>
-            }
-          />
-          <Route
-            path="clients"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageClients />
-              </motion.div>
-            }
-          />
-          <Route
-            path="news"
-            element={
-              <motion.div {...pageTransition}>
-                <ManageNews />
-              </motion.div>
-            }
-          />
+          <Route path="home" element={<motion.div {...pageTransition}><ManageHome /></motion.div>} />
+          <Route path="about" element={<motion.div {...pageTransition}><ManageAbout /></motion.div>} />
+          <Route path="services" element={<motion.div {...pageTransition}><ManageServices /></motion.div>} />
+          <Route path="industries" element={<motion.div {...pageTransition}><ManageIndustries /></motion.div>} />
+          <Route path="certifications" element={<motion.div {...pageTransition}><ManageCertifications /></motion.div>} />
+          <Route path="clients" element={<motion.div {...pageTransition}><ManageClients /></motion.div>} />
+          <Route path="news" element={<motion.div {...pageTransition}><ManageNews /></motion.div>} />
         </Route>
 
         {/* Fallback */}
-        <Route
-          path="*"
-          element={
-            <motion.div {...pageTransition}>
-              <NotFound />
-            </motion.div>
-          }
-        />
+        <Route path="*" element={<motion.div {...pageTransition}><NotFound /></motion.div>} />
       </Routes>
     </AnimatePresence>
   );
 }
 
 export default function App() {
-  // optional: keep your scroll to top on route change if you like
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
     <AdminProvider>
-      <BrowserRouter>
+      <Router>
         {/* Preloader is mounted in main.jsx; not here */}
         <SiteBackground />
         <Navbar />
-
-        {/* Suspense boundary for lazy routes */}
         <Suspense fallback={<div style={{ padding: "2rem" }}>Loading…</div>}>
           <AnimatedRoutes />
         </Suspense>
-
         <ScrollToTopButton />
         <Footer />
-
         {/* Floating helpers / widgets */}
         <Chatbot />
         <ScrollToTop />
         <WhatsAppButton />
-      </BrowserRouter>
+      </Router>
     </AdminProvider>
   );
 }

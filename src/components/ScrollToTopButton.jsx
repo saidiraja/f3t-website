@@ -18,7 +18,7 @@ export default function ScrollToTopButton() {
         .scrolltop-fab {
           position: fixed;
           right: 16px;
-          bottom: 96px; /* sits above Chatbot at bottom-right */
+          bottom: 16px; /* sits above Chatbot at bottom-right */
           z-index: 1001; /* above Chatbot(1000) and WhatsApp(999) */
           box-shadow: 0 6px 18px rgba(0,0,0,0.25);
         }

@@ -1,33 +1,64 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 
+const EMPTY = { unit:'', name_fr:'', name_en:'', description_fr:'', description_en:'' };
+
 export default function ManageServices() {
   const [list, setList] = useState([]);
-  const [form, setForm] = useState({ unit:'', name_fr:'', name_en:'', description_fr:'', description_en:'' });
+  const [form, setForm] = useState(EMPTY);
+  const [err, setErr] = useState('');
 
-  const load = () => api.getServices().then(setList);
+  const load = () => api.adminListServices().then(setList).catch(e=>setErr(e.message));
   useEffect(load, []);
 
-  const add = async () => { await api.addService(form); setForm({ unit:'', name_fr:'', name_en:'', description_fr:'', description_en:'' }); load(); };
-  const update = async (id, item) => { await api.updateService(id, item); load(); };
-  const del = async (id) => { await api.deleteService(id); load(); };
+  const create = async () => {
+    setErr('');
+    try {
+      const created = await api.adminCreateService(form);
+      setForm(EMPTY);
+      setList(l => [created, ...l]);
+    } catch (e) { setErr(e.message); }
+  };
+
+  const save = async (id, patch) => {
+    setErr('');
+    try {
+      const updated = await api.adminUpdateService(id, patch);
+      setList(l => l.map(x => x.id === id ? updated : x));
+    } catch (e) { setErr(e.message); }
+  };
+
+  const del = async (id) => {
+    if (!confirm('Delete service?')) return;
+    setErr('');
+    try {
+      await api.adminDeleteService(id);
+      setList(l => l.filter(x => x.id !== id));
+    } catch (e) { setErr(e.message); }
+  };
 
   return (
     <div>
       <h2>Services</h2>
-      <div style={{display:'grid', gap:8, gridTemplateColumns:'repeat(2,1fr)'}}>
-        <input placeholder="Unit (e.g. Vacuum Heat Treatment Unit)" value={form.unit} onChange={e=>setForm({...form, unit:e.target.value})}/>
-        <input placeholder="Name FR" value={form.name_fr} onChange={e=>setForm({...form, name_fr:e.target.value})}/>
-        <input placeholder="Name EN" value={form.name_en} onChange={e=>setForm({...form, name_en:e.target.value})}/>
-        <input placeholder="Desc FR" value={form.description_fr} onChange={e=>setForm({...form, description_fr:e.target.value})}/>
-        <input placeholder="Desc EN" value={form.description_en} onChange={e=>setForm({...form, description_en:e.target.value})}/>
-      </div>
-      <button onClick={add} style={{marginTop:8}}>Add</button>
+      {err && <p style={{color:'crimson'}}>{err}</p>}
 
-      <table style={{width:'100%', marginTop:16}}>
-        <thead><tr><th>Unit</th><th>Name FR / EN</th><th>Actions</th></tr></thead>
+      <section style={{ border:'1px solid #ddd', padding:12, marginBottom:16 }}>
+        <h4>New Service</h4>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+          <label>Unit <input value={form.unit} onChange={e=>setForm({...form, unit:e.target.value})}/></label>
+          <label>Name (FR) <input value={form.name_fr} onChange={e=>setForm({...form, name_fr:e.target.value})}/></label>
+          <label>Name (EN) <input value={form.name_en} onChange={e=>setForm({...form, name_en:e.target.value})}/></label>
+          <label>Description (FR) <textarea rows={3} value={form.description_fr} onChange={e=>setForm({...form, description_fr:e.target.value})}/></label>
+          <label>Description (EN) <textarea rows={3} value={form.description_en} onChange={e=>setForm({...form, description_en:e.target.value})}/></label>
+        </div>
+        <button onClick={create} style={{ marginTop:8 }}>Create</button>
+      </section>
+
+      <table border="1" cellPadding="8" style={{ width:'100%' }}>
+        <thead><tr><th>ID</th><th>Unit</th><th>Name FR</th><th>Name EN</th><th>Actions</th></tr></thead>
         <tbody>
-          {list.map(item => <Row key={item.id} item={item} onSave={(it)=>update(item.id, it)} onDelete={()=>del(item.id)} />)}
+          {list.map(item => <Row key={item.id} item={item} onSave={save} onDelete={()=>del(item.id)} />)}
+          {!list.length && <tr><td colSpan={5}>No services yet.</td></tr>}
         </tbody>
       </table>
     </div>
@@ -38,13 +69,12 @@ function Row({ item, onSave, onDelete }) {
   const [edit, setEdit] = useState(item);
   return (
     <tr>
+      <td>{item.id}</td>
       <td><input value={edit.unit||''} onChange={e=>setEdit({...edit, unit:e.target.value})}/></td>
-      <td>
-        <input value={edit.name_fr||''} onChange={e=>setEdit({...edit, name_fr:e.target.value})}/>
-        <input value={edit.name_en||''} onChange={e=>setEdit({...edit, name_en:e.target.value})}/>
-      </td>
-      <td>
-        <button onClick={()=>onSave(edit)}>Save</button>
+      <td><input value={edit.name_fr||''} onChange={e=>setEdit({...edit, name_fr:e.target.value})}/></td>
+      <td><input value={edit.name_en||''} onChange={e=>setEdit({...edit, name_en:e.target.value})}/></td>
+      <td style={{whiteSpace:'nowrap'}}>
+        <button onClick={()=>onSave(item.id, edit)}>Save</button>
         <button onClick={onDelete} style={{marginLeft:8}}>Delete</button>
       </td>
     </tr>

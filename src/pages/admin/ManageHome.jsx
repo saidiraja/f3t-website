@@ -4,13 +4,23 @@ import { api } from '../../api';
 export default function ManageHome() {
   const [data, setData] = useState({ title_fr:'', title_en:'', intro_fr:'', intro_en:'' });
   const [saved, setSaved] = useState(false);
+  const [err, setErr] = useState('');
 
-  useEffect(() => { api.getHome().then(setData); }, []);
-  const save = async () => { await api.saveHome(data); setSaved(true); setTimeout(()=>setSaved(false), 1200); };
+  useEffect(() => { api.getHome().then(setData).catch(e=>setErr(e.message)); }, []);
+
+  const save = async () => {
+    setErr('');
+    try {
+      await api.updateHome(data);
+      setSaved(true);
+      setTimeout(()=>setSaved(false), 1200);
+    } catch (e) { setErr(e.message); }
+  };
 
   return (
     <div>
       <h2>Home (FR/EN)</h2>
+      {err && <p style={{color:'crimson'}}>{err}</p>}
       <TwoCol>
         <Field label="Titre (FR)" value={data.title_fr} onChange={v=>setData({...data, title_fr:v})}/>
         <Field label="Title (EN)" value={data.title_en} onChange={v=>setData({...data, title_en:v})}/>

@@ -1,17 +1,24 @@
 // src/pages/Contact.jsx
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useI18n } from "../i18n/useI18n";
 import SEO from "../components/SEO";
+import { useForm, ValidationError } from "@formspree/react";
 
 export default function Contact() {
   const { lang } = useI18n();
-  const [form, setForm] = useState({ name: "", email: "", msg: "" });
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
+
+  // --- URLs that work on GitHub Pages (repo base is /f3t-website/)
+  const base = (import.meta.env.BASE_URL || "/");
+  const siteOrigin = typeof window !== "undefined" ? window.location.origin : "";
+  const siteUrl = siteOrigin + base; // e.g. https://<user>.github.io/f3t-website/
+  const canonical = siteUrl + "#/contact";
+  const logoAbs = new URL(base + "Nlogo.png", siteOrigin).href;
 
   const title = lang === "fr" ? "F3T | Contact" : "F3T | Contact";
   const description =
@@ -19,12 +26,13 @@ export default function Contact() {
       ? "Contactez F3T : Lot N°23+54 Zone Industrielle 1152 Hammem Zriba Zaghouan, +216 72 677 013, f3t_direction@topnet.tn."
       : "Contact F3T: Lot N°23+54 Industrial Zone 1152 Hammem Zriba Zaghouan, +216 72 677 013, f3t_direction@topnet.tn.";
 
+  // Organization JSON-LD (kept inline because your SEO.jsx doesn’t take jsonLd props)
   const orgSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Fraternité Tunisienne de Traitement Thermique (F3T)",
-    url: "https://<your-domain>",
-    logo: "https://<your-domain>/Nlogo.png",
+    url: siteUrl,
+    logo: logoAbs,
     address: {
       "@type": "PostalAddress",
       streetAddress: "Lot: N°23+54 Zone Industrielle 1152 Hammem Zriba",
@@ -35,23 +43,16 @@ export default function Contact() {
     email: "f3t_direction@topnet.tn",
   };
 
-  function onChange(e) {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
-  }
-
-  function onSubmit(e) {
-    e.preventDefault();
-    // No backend: just a friendly confirmation
-    alert(lang === "fr" ? "✅ Message envoyé (démo – pas de backend)." : "✅ Message sent (demo – no backend).");
-    setForm({ name: "", email: "", msg: "" });
-  }
+  // --- Formspree (real submissions)
+  // 1) npm i @formspree/react
+  // 2) Replace YOUR_FORMSPREE_ID below
+  const [state, handleSubmit] = useForm("YOUR_FORMSPREE_ID");
 
   return (
-    <section style={{ padding: "2rem", background:  "transparent" }}>
-      <SEO title={title} description={description} canonical="https://<your-domain>/contact" />
+    <section style={{ padding: "2rem", background: "transparent" }}>
+      <SEO title={title} description={description} canonical={canonical} />
 
-      {/* Organization JSON-LD (update your domain after deployment) */}
+      {/* JSON-LD */}
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
@@ -76,8 +77,8 @@ export default function Contact() {
         <div
           data-aos="fade-up"
           style={{
-              backgroundColor: "rgba(255,255,255,0.85)",
-                backdropFilter: "saturate(120%) blur(2px)",
+            backgroundColor: "rgba(255,255,255,0.85)",
+            backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
@@ -85,7 +86,8 @@ export default function Contact() {
           }}
         >
           <p>
-            <strong>Email:</strong> <a href="mailto:f3t_direction@topnet.tn">f3t_direction@topnet.tn</a>
+            <strong>Email:</strong>{" "}
+            <a href="mailto:f3t_direction@topnet.tn">f3t_direction@topnet.tn</a>
           </p>
           <p>
             <strong>Téléphone / Phone:</strong>{" "}
@@ -111,85 +113,89 @@ export default function Contact() {
           />
         </div>
 
-        {/* Contact Form */}
+        {/* Contact Form (Formspree) */}
         <div
           data-aos="fade-up"
           style={{
-             backgroundColor: "rgba(255,255,255,0.85)",
-                backdropFilter: "saturate(120%) blur(2px)",
+            backgroundColor: "rgba(255,255,255,0.85)",
+            backdropFilter: "saturate(120%) blur(2px)",
             padding: "2rem",
             borderRadius: "12px",
             boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
           }}
         >
-          <form onSubmit={onSubmit} noValidate>
-            <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="name" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
-                {lang === "fr" ? "Nom" : "Name"}
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={onChange}
-                placeholder={lang === "fr" ? "Votre nom" : "Your name"}
-                required
-                aria-required="true"
-                style={inputStyle}
-              />
-            </div>
+          {state.succeeded ? (
+            <p role="status">
+              {lang === "fr" ? "✅ Merci, votre message a été envoyé." : "✅ Thanks, your message has been sent."}
+            </p>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate>
+              <div style={{ marginBottom: "1rem" }}>
+                <label htmlFor="name" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                  {lang === "fr" ? "Nom" : "Name"}
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  aria-required="true"
+                  style={inputStyle}
+                  placeholder={lang === "fr" ? "Votre nom" : "Your name"}
+                />
+                <ValidationError prefix="Name" field="name" errors={state.errors} />
+              </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="email" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={onChange}
-                placeholder="email@example.com"
-                required
-                aria-required="true"
-                style={inputStyle}
-              />
-            </div>
+              <div style={{ marginBottom: "1rem" }}>
+                <label htmlFor="email" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                  Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  aria-required="true"
+                  style={inputStyle}
+                  placeholder="email@example.com"
+                />
+                <ValidationError prefix="Email" field="email" errors={state.errors} />
+              </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-              <label htmlFor="msg" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
-                {lang === "fr" ? "Message" : "Message"}
-              </label>
-              <textarea
-                id="msg"
-                name="msg"
-                rows={4}
-                value={form.msg}
-                onChange={onChange}
-                placeholder={lang === "fr" ? "Votre message…" : "Your message…"}
-                required
-                aria-required="true"
-                style={{ ...inputStyle, resize: "vertical" }}
-              />
-            </div>
+              <div style={{ marginBottom: "1rem" }}>
+                <label htmlFor="message" style={{ display: "block", marginBottom: ".35rem", color: "#051d40" }}>
+                  {lang === "fr" ? "Message" : "Message"}
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={5}
+                  required
+                  aria-required="true"
+                  style={{ ...inputStyle, resize: "vertical" }}
+                  placeholder={lang === "fr" ? "Votre message…" : "Your message…"}
+                />
+                <ValidationError prefix="Message" field="message" errors={state.errors} />
+              </div>
 
-            <button
-              type="submit"
-              style={{
-                backgroundColor: "#d51820",
-                color: "white",
-                padding: "0.6rem 1.5rem",
-                border: "none",
-                borderRadius: "25px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-              aria-label={lang === "fr" ? "Envoyer le message" : "Send the message"}
-            >
-              {lang === "fr" ? "Envoyer" : "Send"}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={state.submitting}
+                style={{
+                  backgroundColor: "#d51820",
+                  color: "white",
+                  padding: "0.6rem 1.5rem",
+                  border: "none",
+                  borderRadius: "25px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+                aria-label={lang === "fr" ? "Envoyer le message" : "Send the message"}
+              >
+                {lang === "fr" ? "Envoyer" : "Send"}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* WhatsApp CTA */}
