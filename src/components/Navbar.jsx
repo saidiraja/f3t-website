@@ -15,7 +15,6 @@ const Navbar = () => {
   const safe = (obj, key, fallback) => (obj && obj[key]) || fallback;
 
   const isActive = (path) => location.pathname === path;
-
   const linkStyle = (path) => ({
     color: isActive(path) ? "#d51820" : "white",
     textDecoration: "none",
@@ -24,7 +23,6 @@ const Navbar = () => {
     transition: "all 0.2s ease",
     outline: "none",
   });
-
   const linkUnderline = (path) => ({
     content: '""',
     position: "absolute",
@@ -60,12 +58,7 @@ const Navbar = () => {
     >
       {/* Logo & brand */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <img
-          src={asset("Nlogo.png")}
-          alt="F3T"
-          style={{ height: "40px", width: "auto" }}
-          loading="eager"
-        />
+        <img src={asset("Nlogo.png")} alt="F3T" style={{ height: "40px", width: "auto" }} loading="eager" />
         <Link to="/" style={linkStyle("/")} aria-current={isActive("/") ? "page" : undefined}>
           <strong>F3T</strong>
         </Link>
@@ -94,7 +87,7 @@ const Navbar = () => {
         {/* Language switch */}
         <LangSwitch />
 
-        {/* Admin */}
+        {/* Admin auth */}
         {!loggedIn ? (
           <div style={{ position: "relative" }}>
             <Link
@@ -108,9 +101,7 @@ const Navbar = () => {
           </div>
         ) : (
           <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-            <Link to="/admin" style={linkStyle("/admin")} aria-current={isActive("/admin") ? "page" : undefined}>
-              {T("Tableau de bord", "Dashboard")}
-            </Link>
+            {/* Dashboard link removed */}
             <button
               onClick={onLogout}
               style={{

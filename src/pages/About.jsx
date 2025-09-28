@@ -1,3 +1,4 @@
+// src/pages/About.jsx
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -10,6 +11,10 @@ import { pickLang } from "../utils/lang";
 import EditBar from "../components/EditBar";
 import { asset } from "../utils/asset";
 
+// NEW
+import { PageContentProvider } from "../cms/PageContentContext";
+import EditableText from "../cms/EditableText";
+
 export default function About() {
   const { lang } = useI18n();
   const [about, setAbout] = useState(null);
@@ -19,18 +24,6 @@ export default function About() {
     AOS.init({ duration: 1000 });
     api.getAbout().then(setAbout).catch(e => setErr(e.message));
   }, []);
-
-  const title = lang === "fr" ? "À propos de F3T – Traitement thermique & surface" : "About F3T – Heat & Surface Treatment";
-  const description = lang === "fr"
-    ? "F3T, fondée en 1990, est la référence en Tunisie pour le traitement thermique et de surface."
-    : "Founded in 1990, F3T is Tunisia’s reference for heat & surface treatment.";
-
-  const rawValues = about ? pickLang(lang, about.values_fr, about.values_en) : "";
-  const values = rawValues
-    ? rawValues.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean)
-    : (lang === "fr"
-        ? ["Qualité","Innovation","Fiabilité","Engagement client"]
-        : ["Quality","Innovation","Reliability","Client Commitment"]);
 
   const mission = about
     ? pickLang(lang, about.mission_fr, about.mission_en)
@@ -44,69 +37,94 @@ export default function About() {
         ? "Être et rester la référence du traitement thermique en Tunisie, et développer notre présence à l’international."
         : "To remain the national leader in heat treatment and expand internationally.");
 
-  const highlights = [
-    { icon: "fas fa-building", fr: "Siège à Zaghouan", en: "Headquartered in Zaghouan" },
-    { icon: "fas fa-users", fr: "30+ employés qualifiés", en: "30+ qualified team members" },
-    { icon: "fas fa-certificate", fr: "ISO 9001 certifiée", en: "ISO 9001 certified" },
-    { icon: "fas fa-globe", fr: "Clients à l'international", en: "International clients" },
-  ];
+  const rawValues = about ? pickLang(lang, about.values_fr, about.values_en) : "";
+  const values = rawValues
+    ? rawValues.split(/\r?\n|,|;|•/).map(s => s.trim()).filter(Boolean)
+    : (lang === "fr"
+        ? ["Qualité","Innovation","Fiabilité","Engagement client"]
+        : ["Quality","Innovation","Reliability","Client Commitment"]);
 
   return (
-    <motion.section initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration: .5 }} style={styles.section}>
-      <EditBar manageTo="/admin/about" />
-      <SEO title={title} description={description} />
+    <PageContentProvider page="about">
+      <motion.section initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration: .5 }} style={styles.section}>
+        <EditBar manageTo="/admin/about" />
+        <SEO
+          title={lang === "fr" ? "À propos de F3T – Traitement thermique & surface" : "About F3T – Heat & Surface Treatment"}
+          description={lang === "fr"
+            ? "F3T, fondée en 1990, est la référence en Tunisie pour le traitement thermique et de surface."
+            : "Founded in 1990, F3T is Tunisia’s reference for heat & surface treatment."}
+        />
 
-      <div style={styles.container}>
-        {err && <p style={{color:'crimson'}}>{err}</p>}
+        <div style={styles.container}>
+          {err && <p style={{color:'crimson'}}>{err}</p>}
 
-        <div data-aos="fade-up" style={styles.heroImage}>
-          <img src={asset("team.jpg")} alt={lang === "fr" ? "Équipe F3T" : "F3T team"} style={{ width:"100%", borderRadius:12, maxHeight:320, objectFit:"cover" }} loading="lazy" />
-        </div>
+          <div data-aos="fade-up" style={styles.heroImage}>
+            <img src={asset("team.jpg")} alt={lang === "fr" ? "Équipe F3T" : "F3T team"} style={{ width:"100%", borderRadius:12, maxHeight:320, objectFit:"cover" }} loading="lazy" />
+          </div>
 
-        <div data-aos="fade-up" style={styles.card}>
-          <h1 style={styles.title}>{lang === "fr" ? "À propos de F3T" : "About F3T"}</h1>
-          <p style={styles.text}>{lang === "fr"
-            ? "Créée en 1990 par le groupe européen Bodycote, F3T est devenue une référence du traitement thermique en Tunisie."
-            : "Founded in 1990 by the European Bodycote group, F3T became a reference in heat treatment in Tunisia."}
-          </p>
-        </div>
+          <div data-aos="fade-up" style={styles.card}>
+            <h1 style={styles.title}>
+              <EditableText k="about_title" fr="À propos de F3T" en="About F3T" />
+            </h1>
+            <p style={styles.text}>
+              <EditableText
+                k="about_intro"
+                fr="Créée en 1990 par le groupe européen Bodycote, F3T est devenue une référence du traitement thermique en Tunisie."
+                en="Founded in 1990 by the European Bodycote group, F3T became a reference in heat treatment in Tunisia."
+              />
+            </p>
+          </div>
 
-        <div data-aos="fade-up" style={styles.gridRow}>
-          {highlights.map((h, i) => (
-            <div key={i} style={styles.highlightBox}>
-              <i className={h.icon} style={styles.icon}></i>
-              <p>{lang === "fr" ? h.fr : h.en}</p>
-            </div>
-          ))}
-        </div>
-
-        <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-bullseye"></i> {lang === "fr" ? "Notre mission" : "Our Mission"}</h2>
-          <p style={styles.text}>{mission}</p>
-        </div>
-
-        <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-eye"></i> {lang === "fr" ? "Notre vision" : "Our Vision"}</h2>
-          <p style={styles.text}>{vision}</p>
-        </div>
-
-        <div data-aos="fade-up" style={styles.card}>
-          <h2 style={styles.subtitle}><i className="fas fa-gem"></i> {lang === "fr" ? "Nos valeurs" : "Our Values"}</h2>
-          <ul style={styles.list}>
-            {values.map((v, i) => (
-              <li key={i}><i className="fas fa-check-circle" style={styles.icon}></i>{v}</li>
+          <div data-aos="fade-up" style={styles.gridRow}>
+            {[
+              { icon: "fas fa-building", k: "about_highlight_loc", fr: "Siège à Zaghouan", en: "Headquartered in Zaghouan" },
+              { icon: "fas fa-users", k: "about_highlight_team", fr: "30+ employés qualifiés", en: "30+ qualified team members" },
+              { icon: "fas fa-certificate", k: "about_highlight_iso", fr: "ISO 9001 certifiée", en: "ISO 9001 certified" },
+              { icon: "fas fa-globe", k: "about_highlight_intl", fr: "Clients à l'international", en: "International clients" },
+            ].map((h, i) => (
+              <div key={i} style={styles.highlightBox}>
+                <i className={h.icon} style={styles.icon}></i>
+                <p><EditableText k={h.k} fr={h.fr} en={h.en} /></p>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        <div data-aos="fade-up" style={styles.ctaBlock}>
-          <h3>{lang === "fr" ? "Envie de collaborer avec nous ?" : "Want to work with us?"}</h3>
-          <Link to="/contact" style={styles.ctaLink}>
-            {lang === "fr" ? "Prenez contact dès aujourd’hui" : "Get in touch today"}
-          </Link>
+          <div data-aos="fade-up" style={styles.card}>
+            <h2 style={styles.subtitle}><i className="fas fa-bullseye"></i>{" "}
+              <EditableText k="about_mission_title" fr="Notre mission" en="Our Mission" />
+            </h2>
+            <p style={styles.text}>{mission}</p>
+          </div>
+
+          <div data-aos="fade-up" style={styles.card}>
+            <h2 style={styles.subtitle}><i className="fas fa-eye"></i>{" "}
+              <EditableText k="about_vision_title" fr="Notre vision" en="Our Vision" />
+            </h2>
+            <p style={styles.text}>{vision}</p>
+          </div>
+
+          <div data-aos="fade-up" style={styles.card}>
+            <h2 style={styles.subtitle}><i className="fas fa-gem"></i>{" "}
+              <EditableText k="about_values_title" fr="Nos valeurs" en="Our Values" />
+            </h2>
+            <ul style={styles.list}>
+              {values.map((v, i) => (
+                <li key={i}><i className="fas fa-check-circle" style={styles.icon}></i>{v}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div data-aos="fade-up" style={styles.ctaBlock}>
+            <h3>
+              <EditableText k="about_cta_title" fr="Envie de collaborer avec nous ?" en="Want to work with us?" />
+            </h3>
+            <Link to="/contact" style={styles.ctaLink}>
+              <EditableText k="about_cta_link" fr="Prenez contact dès aujourd’hui" en="Get in touch today" />
+            </Link>
+          </div>
         </div>
-      </div>
-    </motion.section>
+      </motion.section>
+    </PageContentProvider>
   );
 }
 
