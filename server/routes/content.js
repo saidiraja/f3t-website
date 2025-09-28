@@ -133,7 +133,8 @@ router.post('/admin/news', requireAuth, create('news', newsCreate));
 router.put('/admin/news/:id', requireAuth, update('news', newsUpdate));
 router.delete('/admin/news/:id', requireAuth, remove('news'));
 
-// ========== NEW: TEXT SLOTS (page key-value) ==========
+// ========== TEXT SLOTS (page key-value) ==========
+
 // public: list by page
 router.get('/public/texts', async (req, res) => {
   await db.read();
@@ -142,14 +143,20 @@ router.get('/public/texts', async (req, res) => {
   res.json(items.sort((a,b) => a.key.localeCompare(b.key)));
 });
 
-// admin: create (unique page+key)
+// admin: create OR update (idempotent upsert by page+key)
 router.post('/admin/texts', requireAuth, validate(textCreate), async (req, res) => {
   await db.read();
-  const { page, key, fr, en } = req.body;
-  const exists = db.data.texts.find(t => t.page === page && t.key === key);
-  if (exists) return res.status(400).json({ error: 'Duplicate page+key' });
+  const { page, key, fr = '', en = '' } = req.body;
   const now = new Date().toISOString();
-  const item = { id: nextId('texts'), page, key, fr: fr || '', en: en || '', created_at: now, updated_at: now };
+  const existing = db.data.texts.find(t => t.page === page && t.key === key);
+  if (existing) {
+    existing.fr = fr;
+    existing.en = en;
+    existing.updated_at = now;
+    await db.write();
+    return res.json(existing); // 200 OK on upsert
+  }
+  const item = { id: nextId('texts'), page, key, fr, en, created_at: now, updated_at: now };
   db.data.texts.push(item);
   await db.write();
   res.status(201).json(item);
@@ -178,7 +185,8 @@ router.delete('/admin/texts/:id', requireAuth, async (req, res) => {
   res.json({ ok: true, id });
 });
 
-// ========== NEW: BLOCKS (page named arrays) ==========
+// ========== BLOCKS (page named arrays) ==========
+
 // public: list by page+name
 router.get('/public/blocks', async (req, res) => {
   await db.read();
@@ -193,7 +201,8 @@ router.post('/admin/blocks', requireAuth, validate(blockItemCreate), async (req,
   await db.read();
   const now = new Date().toISOString();
   const { page, name, fr = '', en = '', image_url = '', order } = req.body || {};
-  const maxOrder = Math.max(-1, ...db.data.blocks.filter(b => b.page === page && b.name === name && typeof b.order === 'number').map(b => b.order));
+  const same = db.data.blocks.filter(b => b.page === page && b.name === name && typeof b.order === 'number');
+  const maxOrder = Math.max(-1, ...same.map(b => b.order));
   const item = { id: nextId('blocks'), page, name, fr, en, image_url, order: (order ?? (maxOrder + 1)), created_at: now, updated_at: now };
   db.data.blocks.push(item);
   await db.write();

@@ -1,5 +1,6 @@
 // server/db.js
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
@@ -7,9 +8,16 @@ import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const file = path.join(__dirname, 'f3t.json');
 
-const adapter = new JSONFile(file);
+// Use Render persistent disk if provided, else local file next to this file
+const filePath =
+  process.env.DB_FILE ||
+  (process.env.RENDER ? '/data/db.json' : path.join(__dirname, 'f3t.json'));
+
+// Ensure directory exists
+fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+const adapter = new JSONFile(filePath);
 export const db = new Low(adapter, {
   admin_users: [],
   // single objects
@@ -21,18 +29,15 @@ export const db = new Low(adapter, {
     values_fr: '',  values_en:  '',
     updated_at: new Date().toISOString()
   },
-  // arrays you already had
+  // arrays
   services: [],
   industries: [],
   certifications: [],
   clients: [],
   news: [],
-  // NEW: key-value content slots (for page text)
-  // { id, page, key, fr, en, created_at, updated_at }
-  texts: [],
-  // NEW: repeatable content blocks (for bullet lists/feature cards on a page)
-  // { id, page, name, fr, en, image_url?, order?, created_at, updated_at }
-  blocks: []
+  // page text slots & blocks
+  texts: [],  // { id, page, key, fr, en, created_at, updated_at }
+  blocks: []  // { id, page, name, fr, en, image_url, order, created_at, updated_at }
 });
 
 export async function initDB() {
@@ -61,9 +66,10 @@ export async function initDB() {
 }
 
 export async function ensureAdminSeed({ email, password }) {
+  if (!email || !password) return;
   await db.read();
   const exists = db.data.admin_users.find(u => u.email === email);
-  if (!exists && email && password) {
+  if (!exists) {
     const password_hash = bcrypt.hashSync(password, 10);
     db.data.admin_users.push({ id: 1, email, password_hash, created_at: new Date().toISOString() });
     await db.write();
@@ -73,5 +79,5 @@ export async function ensureAdminSeed({ email, password }) {
 
 export function nextId(collection) {
   const arr = db.data[collection] || [];
-  return arr.length ? Math.max(...arr.map(x => x.id || 0)) + 1 : 1;
+  return arr.length ? Math.max(...arr.map(x => Number(x.id) || 0)) + 1 : 1;
 }

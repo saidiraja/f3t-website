@@ -18,41 +18,46 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = Number(process.env.PORT || 5174);
 
-// Build allowed origins list (comma-separated)
-const DEFAULT_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173'];
-const ALLOWED = (process.env.CORS_ORIGIN || DEFAULT_ORIGINS.join(','))
+// -------- CORS --------
+// You can provide either CORS_ORIGIN (comma-separated) and/or FRONTEND_ORIGIN (single).
+const defaults = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+const extra = (process.env.CORS_ORIGIN || '')
   .split(',')
   .map(s => s.trim())
   .filter(Boolean);
+if (process.env.FRONTEND_ORIGIN) extra.push(process.env.FRONTEND_ORIGIN);
 
-// 1) DB init + seed admin
+const ALLOWED = Array.from(new Set([...defaults, ...extra]));
+
+// -------- DB init + seed admin --------
 await initDB();
 await ensureAdminSeed({
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASSWORD,
 });
 
-// 2) Security & logging
+// -------- Security & logging --------
 app.disable('x-powered-by');
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// 3) CORS + body
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // Vite proxy / curl
-    if (ALLOWED.includes(origin)) return cb(null, true);
-    return cb(new Error(`CORS blocked: ${origin}`), false);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+// -------- Body & CORS --------
+app.use(express.json({ limit: '10mb' }));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Allow curl/Postman (no origin) and any allowed origin
+      if (!origin || ALLOWED.includes(origin)) return cb(null, true);
+      return cb(new Error(`CORS blocked: ${origin}`), false);
+    },
+    credentials: false,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.options('*', cors());
 
-app.use(express.json({ limit: '10mb' }));
-
-// 4) Static /uploads
+// -------- Static uploads --------
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 app.use('/uploads', express.static(uploadsDir, {
@@ -61,33 +66,18 @@ app.use('/uploads', express.static(uploadsDir, {
   }
 }));
 
-// 5) API Routes
+// -------- API Routes --------
 app.use('/api', authRouter);     // POST /api/login
-app.use('/api', contentRouter);  // /api/public/*, /api/admin/*
+app.use('/api', contentRouter);  // /api/public/* and /api/admin/*
 
-// 6) Health
+// -------- Health --------
 app.get('/', (_req, res) => res.json({ ok: true, service: 'F3T CMS API' }));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
-// 7) Optionally serve the built frontend (no CORS in prod)
-//    Set SERVE_FRONTEND=true and build the app to ../dist
-if (process.env.SERVE_FRONTEND === 'true') {
-  const clientDir = path.resolve(__dirname, '..', 'dist');
-  if (fs.existsSync(clientDir)) {
-    app.use(express.static(clientDir));
-    app.get(/^(?!\/api|\/uploads).+/, (req, res) =>
-      res.sendFile(path.join(clientDir, 'index.html'))
-    );
-    console.log('Serving frontend from', clientDir);
-  } else {
-    console.warn('SERVE_FRONTEND=true but dist folder not found:', clientDir);
-  }
-}
-
-// 8) 404 for unknown /api paths
+// -------- 404 for unknown /api --------
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
-// 9) Error handler
+// -------- Error handler --------
 app.use((err, _req, res, _next) => {
   const message = err?.message || 'Internal server error';
   if (process.env.NODE_ENV !== 'production') console.error('Unhandled error:', err);
@@ -96,8 +86,8 @@ app.use((err, _req, res, _next) => {
   res.status(status).json({ error: message });
 });
 
-// 10) Start
+// -------- Start --------
 app.listen(PORT, () => {
-  console.log(`CMS server running on http://localhost:${PORT}`);
-  console.log(`Allowed CORS origins: ${ALLOWED.join(', ')}`);
+  console.log(`CMS server running on :${PORT}`);
+  console.log('Allowed CORS origins:', ALLOWED.join(', '));
 });
