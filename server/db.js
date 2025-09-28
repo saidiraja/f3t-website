@@ -1,83 +1,47 @@
 // server/db.js
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node';
+import 'dotenv/config';
 import bcrypt from 'bcryptjs';
+import { Pool } from 'pg';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set. Add it in Render → Web Service → Settings → Environment.");
+}
 
-// Use Render persistent disk if provided, else local file next to this file
-const filePath =
-  process.env.DB_FILE ||
-  (process.env.RENDER ? '/data/db.json' : path.join(__dirname, 'f3t.json'));
-
-// Ensure directory exists
-fs.mkdirSync(path.dirname(filePath), { recursive: true });
-
-const adapter = new JSONFile(filePath);
-export const db = new Low(adapter, {
-  admin_users: [],
-  // single objects
-  home: { id: 1, title_fr: '', title_en: '', intro_fr: '', intro_en: '', updated_at: new Date().toISOString() },
-  about: {
-    id: 1,
-    mission_fr: '', mission_en: '',
-    vision_fr: '',  vision_en:  '',
-    values_fr: '',  values_en:  '',
-    updated_at: new Date().toISOString()
-  },
-  // arrays
-  services: [],
-  industries: [],
-  certifications: [],
-  clients: [],
-  news: [],
-  // page text slots & blocks
-  texts: [],  // { id, page, key, fr, en, created_at, updated_at }
-  blocks: []  // { id, page, name, fr, en, image_url, order, created_at, updated_at }
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // works with Neon/Supabase
 });
 
 export async function initDB() {
-  await db.read();
-  if (!db.data || !db.data.admin_users) {
-    db.data = {
-      admin_users: [],
-      home: { id: 1, title_fr: '', title_en: '', intro_fr: '', intro_en: '', updated_at: new Date().toISOString() },
-      about: {
-        id: 1,
-        mission_fr: '', mission_en: '',
-        vision_fr: '',  vision_en:  '',
-        values_fr: '',  values_en:  '',
-        updated_at: new Date().toISOString()
-      },
-      services: [],
-      industries: [],
-      certifications: [],
-      clients: [],
-      news: [],
-      texts: [],
-      blocks: []
-    };
-    await db.write();
-  }
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS admin_users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+
+    CREATE TABLE IF NOT EXISTS texts (
+      id SERIAL PRIMARY KEY,
+      page TEXT NOT NULL,
+      "key" TEXT NOT NULL,
+      fr TEXT NOT NULL DEFAULT '',
+      en TEXT NOT NULL DEFAULT '',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      CONSTRAINT texts_unique UNIQUE(page, "key")
+    );
+  `);
 }
 
-export async function ensureAdminSeed({ email, password }) {
+export async function ensureAdminSeed(email, password) {
   if (!email || !password) return;
-  await db.read();
-  const exists = db.data.admin_users.find(u => u.email === email);
-  if (!exists) {
-    const password_hash = bcrypt.hashSync(password, 10);
-    db.data.admin_users.push({ id: 1, email, password_hash, created_at: new Date().toISOString() });
-    await db.write();
-    console.log(`Seeded admin: ${email}`);
+  const { rows } = await pool.query(`SELECT id FROM admin_users WHERE email = $1 LIMIT 1`, [email]);
+  if (rows.length === 0) {
+    const hash = bcrypt.hashSync(password, 10);
+    await pool.query(
+      `INSERT INTO admin_users (email, password_hash) VALUES ($1, $2)`,
+      [email, hash]
+    );
+    console.log(`[DB] Seeded admin: ${email}`);
   }
-}
-
-export function nextId(collection) {
-  const arr = db.data[collection] || [];
-  return arr.length ? Math.max(...arr.map(x => Number(x.id) || 0)) + 1 : 1;
 }
